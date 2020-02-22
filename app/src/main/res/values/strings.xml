@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">TransEscolar Tio</string>
+    <string name="itinerario">Rota</string>
+    <string name="passageiros">Passageiros</string>
+    <string name="escolas">Escolas</string>
+    <string name="usu_rio">Usuário</string>
+    <string name="pais">Pais</string>
+    <string name="mapa">Mapa</string>
+    <string name="todo">TODO</string>
+    <string name="title_activity_intinerario">IntinerarioActivity</string>
+    <string name="title_activity_maps_ex">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pref_file">br.com.pref_file</string>
+    <string name="pref_user_name">br.com.pref_user_name</string>
+    <string name="pref_user_status">br.com.pref_user_status</string>
+    <string name="title_activity_editar_usuario">EditarUsuarioActivity</string>
+    <string name="apelido">Apelido:</string>
+    <string name="cpf">CPF</string>
+    <string name="title_activity_driver_maps">Map</string>
+    <string name="service_not_available">Service not available</string>
+    <string name="invalid_lat_long_used">Invalid coordinates used</string>
+    <string name="no_address_found">No address found</string>
+    <string name="nome">Nome:</string>
+    <string name="email">Email:</string>
+    <string name="cpf2">CPF:</string>
+    <string name="placa">Placa:</string>
+    <string name="telefone">Telefone:</string>
+    <string name="title_activity_itinerario_pro">ItinerarioProActivity</string>
+    <string name="title_activity_add_itinerario">AddItinerarioActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <!--Itinerário-->
+
+    <string name="no_cardetails">Click no botão abaixo para criar um lembrete de rota!</string>
+    <string name="title_activity_add_reminder">Add Rota</string>
+    <string name="title_activity_edit_reminder">Editar Rota</string>
+    <string name="title_activity_licenses">Licenses</string>
+
+    <string name="add_reminder">Rota</string>
+    <string name="details">Detalhe</string>
+    <string name="date">Data</string>
+    <string name="time">Hora</string>
+    <string name="repeat">Repetir</string>
+    <string name="repeat_off">Off</string>
+    <string name="repeat_no">Intervalo da repetição</string>
+    <string name="repeat_type">Tipo de repetições</string>
+
+    <string name="action_discard_reminder">Descatar Rota</string>
+    <string name="action_save_reminder">Salvar Rota</string>
+
+    <string name="editor_activity_title_new_reminder">Add Detalhes</string>
+    <string name="editor_activity_title_edit_reminder">Editar Rota</string>
+    <string name="unsaved_changes_dialog_msg">Descatar as mudança e sair?</string>
+    <string name="discard">Descatar</string>
+
+    <string name="keep_editing">Continue Editando</string>
+    <string name="delete_dialog_msg">Deletar a Rota?</string>
+
+    <string name="delete">Deletar</string>
+
+    <string name="cancel">Cancelar</string>
+    <string name="editor_delete_reminder_successful">Rota deletada</string>
+
+    <string name="editor_delete_reminder_failed">Erro ao deletar a rota!</string>
+
+    <string name="editor_insert_reminder_successful">Rota salva!</string>
+
+    <string name="editor_insert_reminder_failed">Erro ao salvar</string>
+
+    <string name="editor_update_reminder_successful">Rota atualizado</string>
+
+    <string name="editor_update_reminder_failed">Erro com a atulização!</string>
+
+    <string name="reminder_title">AlarmReminder</string>
+    <string name="mensagem_enviada">Mensagem Enviada!</string>
+
+</resources>

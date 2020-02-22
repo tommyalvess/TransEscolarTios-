@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#007FFF</color>
+    <color name="colorPrimaryDark">#007FFF</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="AzulTema">#007fff</color>
+    <color name="holo_light_primary">#007fff</color>
+    <color name="background_holo_light">#007fff</color>
+    <color name="secondary_text_holo_dark">#0007FF</color>
+    <color name="primary_text_holo_light">#FF4081</color>
+    <color name="holo_light_primary_dark">#fbf7f7</color>
+    <color name="ColorBGThema">#b0c4de</color>
+
+    <!--Calendario-->
+    <color name="dayPressed">#303F9F</color>
+    <color name="daySelected">#3F51B5</color>
+    <color name="dayDeselected">@android:color/darker_gray</color>
+
+    <color name="fab_pressed">#546e7a</color>
+
+    <color name="graylight">#BEBEBE</color>
+    <color name="startblue">#2F4F4F</color>
+    <color name="endblue">#32CD32</color>
+
+    <color name="address">#2F7092</color>
+    <color name="followers">#0D5D98</color>
+    <color name="headings">#3797CF</color>
+    <color name="solidCircle">#AAFFFFFF</color>
+    <color name="circleBorder">#50FFFFFF</color>
+    <color name="gradEnd">#67EFC8</color>
+    <color name="gradStart">#63C9FF</color>
+    <color name="followersBg">#65DCE5</color>
+    <color name="followingBg">#49BEFF</color>
+    <color name="grey">#E5E5E5</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="red">#ff0000</color>
+
+    <color name="button_pressed">#ff8a00</color>
+    <color name="button_focused">#ff8a00</color>
+    <color name="button_default">#1c76bb</color>
+    <color name="transparente">#80000000</color>
+
+</resources>

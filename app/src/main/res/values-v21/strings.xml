@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nome">Nome:</string>
+    <string name="email">Email:</string>
+    <string name="cpf2">CPF:</string>
+    <string name="placa">Placa:</string>
+    <string name="telefone">Telefone:</string>
+</resources>
