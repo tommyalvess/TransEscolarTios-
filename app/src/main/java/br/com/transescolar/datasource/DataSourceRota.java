@@ -27,16 +27,20 @@ import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
 import br.com.transescolar.controler.TioControler;
 import br.com.transescolar.model.Rota;
+import br.com.transescolar.model.Tios;
 
 import static br.com.transescolar.API.URL.URL_REGIST_ROTA;
+import static br.com.transescolar.Activies.CadastrarRotaActivity.progressBar;
 
 public class DataSourceRota {
 
     private Context context;
-    private TioControler tioControler;
+    private Tios objTio;
 
     public boolean inserirDadosRota(Rota objRota){
         //TODO: Adicionar Tios
+
+        objTio = new Tios();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGIST_ROTA,
                 new com.android.volley.Response.Listener<String>() {
@@ -52,11 +56,10 @@ public class DataSourceRota {
                             if (success.equals("OK")){
                                 Intent intent = new Intent(context, RotaActivity.class);
                                 DataSourceRota.this.context.startActivity(intent);
-                                //progressBar.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
                             }else {
                                 Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-                               // progressBar.setVisibility(View.GONE);
+                                progressBar.setVisibility(View.GONE);
                                 //btnSalvarI.setVisibility(View.VISIBLE);
 
                             }
@@ -65,14 +68,14 @@ public class DataSourceRota {
                             e1.printStackTrace();
                             Log.e("JSON", "Error parsing JSON", e1);
                             Log.e("Chamada", response);
-                            //progressBar.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
                         }
                     }
                 },
                 new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
                     }
                 }){
             @Override
@@ -81,7 +84,7 @@ public class DataSourceRota {
                 params.put("nm_rota", objRota.getNm_rota());
                 params.put("hora", objRota.getHora());
                 params.put("dias", objRota.getDias());
-                params.put("idTios", tioControler.pegarIdTio());
+                params.put("idTios", String.valueOf(objTio.getId()));
                 return params;
             }
         };

@@ -37,20 +37,25 @@ import java.util.Map;
 
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
+import br.com.transescolar.controler.TioControler;
+import br.com.transescolar.model.Tios;
 
 import static br.com.transescolar.API.URL.URL_LOGIN;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    Button btnLogin;
+    public static Button btnLogin;
     EditText editCpf, editSenha;
     TextView textForgot;
-    ProgressBar loginProgress;
+    public static ProgressBar loginProgress;
 
     static String LoggedIn_User_Email;
 
-    SessionManager sessionManager;
+    public static SessionManager sessionManager;
+
+    TioControler tioControler;
+    Tios objTio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        tioControler = new TioControler();
+        objTio = new Tios();
 
         //OneSignal
         OneSignal.startInit(this).init();
@@ -73,27 +81,31 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cpf = editCpf.getText().toString().trim();
-                String senha = editSenha.getText().toString().trim();
+                //TODO: conexão com controler
+                final String cpf = editCpf.getText().toString().trim();
+                final String senha  = editSenha.getText().toString().trim();
 
-                //validating inputs
+                objTio.setCpf(editCpf.getText().toString().trim());
+                objTio.setSenha(editSenha.getText().toString().trim());
+
                 if (TextUtils.isEmpty(cpf) ) {
-                    editCpf.setError("Please enter your CPF");
+                    editCpf.setError("por favor inserir o CPF");
                     editCpf.requestFocus();
                     return;
-                }
-
-                if (TextUtils.isEmpty(senha)) {
-                    editSenha.setError("Please enter your password");
+                }else if (TextUtils.isEmpty(senha)) {
+                    editSenha.setError("por favor inserir a senha");
                     editSenha.requestFocus();
                     return;
+                }else {
+                    LoggedIn_User_Email = cpf.trim();
+                    OneSignal.sendTag("User_ID", LoggedIn_User_Email);
+
+                    tioControler.logarTio(objTio, LoginActivity.this);
                 }
 
-                login(cpf,senha);
 
-                LoggedIn_User_Email = cpf.trim();
 
-                OneSignal.sendTag("User_ID", LoggedIn_User_Email);
+                //login(cpf,senha);
             }
         });
 

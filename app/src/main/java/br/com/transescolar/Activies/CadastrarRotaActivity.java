@@ -86,10 +86,11 @@ public class CadastrarRotaActivity extends AppCompatActivity {
         nomeI = findViewById(R.id.nomeI);
         horarioI = findViewById(R.id.horarioI);
         btnSalvarI = findViewById(R.id.btnSalvarI);
-        progressBar.setVisibility(View.GONE);
         constraintLayoutCadR = findViewById(R.id.constraintLayoutCadR);
         nomeI.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
+
+        progressBar.setVisibility(View.GONE);
 
         tDon = findViewById(R.id.tDom);
         tSeg = findViewById(R.id.tSeg);
@@ -99,14 +100,13 @@ public class CadastrarRotaActivity extends AppCompatActivity {
         tSex = findViewById(R.id.tSex);
         tSab = findViewById(R.id.tSab);
 
-        progressBar.setVisibility(View.GONE);
-
         btnSalvarI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                //TODO: conexão com Controler
                 popularDadosRota();
                 rotaControler.salvarRota(objRota);
+
 
             }
         });

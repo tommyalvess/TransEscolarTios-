@@ -1,17 +1,20 @@
 package br.com.transescolar.controler;
 
-import java.util.HashMap;
+import android.content.Context;
 
-import br.com.transescolar.Conexao.SessionManager;
+import br.com.transescolar.datasource.DataSourceLogin;
+import br.com.transescolar.model.Tios;
 
-public class TioControler {
-    SessionManager sessionManager;
+public class TioControler extends DataSourceLogin {
 
-    public String pegarIdTio(){
+    private Tios tio;
 
-        HashMap<String, String> user = sessionManager.getUserDetail();
-        String getId = user.get(sessionManager.ID);
+    public TioControler() {
+        this.tio = new Tios();
+    }
 
-        return getId;
+    public void logarTio(Tios objTio, Context context){
+        this.tio = objTio;
+        sessionTio(objTio, context);
     }
 }

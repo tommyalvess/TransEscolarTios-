@@ -37,7 +37,7 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putInt("id", user.getId());
+        editor.putInt("id", user.getIdT());
         editor.putString("nome", user.getNome());
 
         editor.apply();
@@ -50,7 +50,7 @@ public class SharedPrefManager {
     public void userLogar(Tios user) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(KEY_ID, user.getId());
+        editor.putInt(KEY_ID, user.getIdT());
         editor.putString(KEY_USERNAME, user.getNome());
         editor.putString(KEY_EMAIL, user.getEmail());
         editor.putString(KEY_CPF, user.getCpf());

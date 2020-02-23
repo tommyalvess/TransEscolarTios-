@@ -38,7 +38,9 @@ import java.util.List;
 import br.com.transescolar.API.ApiClient;
 import br.com.transescolar.API.IRota;
 import br.com.transescolar.Adapter.RotaAdapter;
+import br.com.transescolar.controler.TioControler;
 import br.com.transescolar.model.Rota;
+import br.com.transescolar.model.Tios;
 import br.com.transescolar.Conexao.NetworkChangeReceiver5;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
@@ -60,8 +62,11 @@ public class RotaActivity extends AppCompatActivity {
     static Snackbar snackbar;
     static ConstraintLayout constraintLayoutRota;
 
-    SessionManager sessionManager;
+    public static SessionManager sessionManager;
     String getId;
+
+    TioControler tioControler;
+    Tios tios;
 
 
     @Override
@@ -73,13 +78,14 @@ public class RotaActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
         getSupportActionBar().setTitle("Rotas");     //Titulo para ser exibido na sua Action Bar em frente à seta
 
+        tioControler = new TioControler();
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         mNetworkReceiver = new NetworkChangeReceiver5();
         registerNetworkBroadcastForNougat();
 
         sessionManager = new SessionManager(this);
-
         HashMap<String, String> user = sessionManager.getUserDetail();
         getId = user.get(sessionManager.ID);
 
@@ -96,8 +102,8 @@ public class RotaActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         //recyclerView.addItemDecoration(new DividerItemDecoration(RotaActivity.this, DividerItemDecoration.VERTICAL));
 
-
         fetchRotas("users", "", getId);
+
 
     }// OnCreat
 
@@ -120,11 +126,6 @@ public class RotaActivity extends AppCompatActivity {
                 }else {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(RotaActivity.this, "Nenhuma rota localizada!", Toast.LENGTH_LONG).show();
-//                    snackbar = showSnackbar(constraintLayoutRota, Snackbar.LENGTH_LONG, RotaActivity.this);
-//                    snackbar.show();
-//                    View view = snackbar.getView();
-//                    TextView tv = (TextView) view.findViewById(R.id.textSnack);
-//                    tv.setText("Nenhuma rota localizada.");
                 }
 
             }
@@ -180,12 +181,7 @@ public class RotaActivity extends AppCompatActivity {
             };
             handler.postDelayed(delayrunnable, 300);
         }else {
-            snackbar = showSnackbar(constraintLayoutRota, Snackbar.LENGTH_INDEFINITE, context);
-            snackbar.show();
-            View view = snackbar.getView();
-            TextView tv = (TextView) view.findViewById(R.id.textSnack);
-            tv.setText("Sem conexão a internet!");
-
+            Toast.makeText(context, "Sem conexão a internet!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -212,32 +208,4 @@ public class RotaActivity extends AppCompatActivity {
         unregisterNetworkChanges();
     }
 
-    private static Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration, Context context) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
-    }
 }// Class

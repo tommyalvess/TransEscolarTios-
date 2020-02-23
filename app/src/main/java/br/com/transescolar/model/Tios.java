@@ -1,13 +1,13 @@
 package br.com.transescolar.model;
 
 public class Tios {
-    private String nome, email, cpf, apelido, placa, tell, senha;
-    private int id;
+    private String id, nome, email, cpf, apelido, placa, tell, senha, img;
+    private int idT;
 
     public Tios() {
     }
 
-    public Tios(int id, String nome, String email, String cpf, String apelido, String placa, String tell, String senha) {
+    public Tios(String id, String nome, String email, String cpf, String apelido, String placa, String tell, String senha, String img) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -16,20 +16,22 @@ public class Tios {
         this.placa = placa;
         this.tell = tell;
         this.senha = senha;
+        this.img = img;
 
     }
 
-    public Tios(int id, String nome, String email, String cpf, String apelido, String placa, String tell) {
-        this.id = id;
+    public Tios(int idT, String nome, String email, String cpf, String apelido, String placa, String senha, String tell) {
+        this.idT = idT;
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
         this.apelido = apelido;
         this.placa = placa;
+        this.senha = senha;
         this.tell = tell;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -89,7 +91,23 @@ public class Tios {
         this.senha = senha;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public int getIdT() {
+        return idT;
+    }
+
+    public void setIdT(int idT) {
+        this.idT = idT;
     }
 }
