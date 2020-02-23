@@ -36,7 +36,10 @@ import java.util.Map;
 
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
+import br.com.transescolar.controler.RotaControler;
 import ca.antonious.materialdaypicker.MaterialDayPicker;
+import br.com.transescolar.model.Rota;
+
 
 import static br.com.transescolar.API.URL.URL_REGIST_ROTA;
 
@@ -46,7 +49,7 @@ public class CadastrarRotaActivity extends AppCompatActivity {
     MaskEditText horarioI;
     MaterialDayPicker diasI;
     Button btnSalvarI;
-    ProgressBar progressBar;
+    public static ProgressBar progressBar;
 
     SessionManager sessionManager;
     String getId;
@@ -56,6 +59,10 @@ public class CadastrarRotaActivity extends AppCompatActivity {
     //Day buttons
     ToggleButton tDon, tSeg, tTer, tQua, tQui, tSex, tSab;
     String markedButtons= "";
+
+    Rota objRota;
+    RotaControler rotaControler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,9 @@ public class CadastrarRotaActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Cadastrar Rota");     //Titulo para ser exibido na sua Action Bar em frente à seta
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        objRota = new Rota();
+        rotaControler = new RotaControler();
 
         sessionManager = new SessionManager(this);
         HashMap<String, String> user = sessionManager.getUserDetail();
@@ -94,24 +104,55 @@ public class CadastrarRotaActivity extends AppCompatActivity {
         btnSalvarI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nome = nomeI.getText().toString().trim();
-                String horario = horarioI.getText().toString().trim();
-                if (nome.isEmpty()){
-                    nomeI.setError("Campo não pode ficar vazio");
-                    nomeI.requestFocus();
-                    return;
-                }else if (horario.isEmpty()){
-                    nomeI.setError("Campo não pode ficar vazio");
-                    nomeI.requestFocus();
-                    return;
-                }else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    btnSalvarI.setVisibility(View.GONE);
-                    Regist();
-                }
+               //TODO: conexão com Controler
+                popularDadosRota();
+                rotaControler.salvarRota(objRota);
 
             }
         });
+
+    }//Final do onCreat
+
+    private void popularDadosRota(){
+
+        if(tDon.isChecked()){
+            markedButtons +="Dom,";
+        }
+        if(tSeg.isChecked()){
+            markedButtons +="Seg,";
+        }
+        if(tTer.isChecked()){
+            markedButtons +="Ter,";
+        }
+        if(tQua.isChecked()){
+            markedButtons +="Qua,";
+        }
+        if(tQui.isChecked()){
+            markedButtons +="Qui,";
+        }
+        if(tSex.isChecked()){
+            markedButtons +="Sex,";
+        }
+        if(tSab.isChecked()){
+            markedButtons +="Sab";
+        }
+
+        objRota.setNm_rota(nomeI.getText().toString().trim());
+        objRota.setHora(horarioI.getText().toString().trim());
+        objRota.setDias(markedButtons);
+
+        if (objRota.getNm_rota().isEmpty()){
+            nomeI.setError("Campo não pode ficar vazio");
+            nomeI.requestFocus();
+            return;
+        }
+
+        if (objRota.getHora().isEmpty()){
+            horarioI.setError("Campo não pode ficar vazio");
+            horarioI.requestFocus();
+            return;
+        }
+
 
 
     }

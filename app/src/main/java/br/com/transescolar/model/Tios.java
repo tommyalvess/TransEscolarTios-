@@ -4,6 +4,9 @@ public class Tios {
     private String nome, email, cpf, apelido, placa, tell, senha;
     private int id;
 
+    public Tios() {
+    }
+
     public Tios(int id, String nome, String email, String cpf, String apelido, String placa, String tell, String senha) {
         this.id = id;
         this.nome = nome;
@@ -56,5 +59,37 @@ public class Tios {
 
     public String getSenha() {
         return senha;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public void setApelido(String apelido) {
+        this.apelido = apelido;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public void setTell(String tell) {
+        this.tell = tell;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

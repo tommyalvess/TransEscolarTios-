@@ -30,6 +30,8 @@ import java.util.regex.Pattern;
 
 import br.com.transescolar.API.ApiClient;
 import br.com.transescolar.R;
+import br.com.transescolar.controler.CadastroControler;
+import br.com.transescolar.model.Tios;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,6 +46,9 @@ public class  Cadastro2Activity extends AppCompatActivity {
     RadioButton bTios, bTias;
     ConstraintLayout constraintLayoutCadas;
 
+    Tios objTios;
+    CadastroControler cadastroControler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +58,9 @@ public class  Cadastro2Activity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
         getSupportActionBar().setTitle("Cadastro");     //Titulo para ser exibido na sua Action Bar em frente à seta
 
+
+        objTios = new Tios();
+        cadastroControler = new CadastroControler();
 
         editNome = findViewById(R.id.editNomeT);
         editCpf =  findViewById(R.id.editCpfT);
@@ -72,14 +80,24 @@ public class  Cadastro2Activity extends AppCompatActivity {
         findViewById(R.id.btnSaveCadastro).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //if user pressed on button register
-                //here we will register the user to server
-                registerUser();
+                //TODO: conexão
+                popularDadosTios();
+                cadastroControler.salvarTios(objTios);
             }
         });
     }
 
-    private void registerUser() {
+    private void popularDadosTios(){
+
+        //TODO: inserido atributos no model Tios
+
+        objTios.setNome(editNome.getText().toString().trim());
+        objTios.setCpf(editCpf.getText().toString().trim());
+        objTios.setApelido(tio + editApelido.getText().toString().trim());
+        objTios.setPlaca(editPlaca.getText().toString().trim());
+        objTios.setTell(editTell.getText().toString().trim());
+        objTios.setSenha(editSenha.getText().toString().trim());
+        objTios.setEmail(editEmail.getText().toString().trim());
 
         int selectedId = radiogTios.getCheckedRadioButtonId();
         // find which radioButton is checked by id
@@ -89,115 +107,42 @@ public class  Cadastro2Activity extends AppCompatActivity {
             tio = "Tia ";
         }
 
-        final String nome = editNome.getText().toString().trim();
-        final String cpf = editCpf.getText().toString().trim();
-        final String apelido = tio + editApelido.getText().toString().trim();
-        final String placa =  editPlaca.getText().toString().trim();
-        final String tell = editTell.getText().toString().trim();
-        final String senha = editSenha.getText().toString().trim();
-        final String email = editEmail.getText().toString().trim();
-
-
-        if (nome.isEmpty()){
+        if (objTios.getNome().isEmpty()){
             editNome.setError("Insira o seu nome");
             editNome.requestFocus();
             return;
         }
-        if (cpf.isEmpty()){
+        if (objTios.getCpf().isEmpty()){
             editCpf.setError("Insira o seu CPF");
             editCpf.requestFocus();
             return;
         }
 
-        if (apelido.isEmpty()){
+        if (objTios.getApelido().isEmpty()){
             editApelido.setError("Insira o seu Apelido");
             editApelido.requestFocus();
             return;
         }
 
-        if (placa.isEmpty()){
+        if (objTios.getPlaca().isEmpty()){
             editPlaca.setError("Insira a placa");
             editPlaca.requestFocus();
             return;
         }
 
-        if (tell.isEmpty()){
+        if (objTios.getTell().isEmpty()){
             editTell.setError("Insira o telefone");
             editTell.requestFocus();
             return;
         }
-        if (email.isEmpty()){
+        if (objTios.getEmail().isEmpty()){
             editEmail.setError("Insira um email!");
             editEmail.requestFocus();
             return;
         }
-//        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-//            editEmail.setError("Email invalido!");
-//            editEmail.requestFocus();
-//            return;
-//        }
-
-        if (senha.isEmpty()){
-            editSenha.setError("Insira sua senha!");
-            editSenha.requestFocus();
-            return;
-        }
-
-        if (senha.length() < 6){
-            editSenha.setError("Senha deve ter 6 caracteres!");
-            editSenha.requestFocus();
-            return;
-        }
-
-        Call<ResponseBody> call = ApiClient
-                .getInstance()
-                .getApi()
-                .createuser(nome, email, cpf, apelido, placa, tell, senha);
-
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                String s = null;
-
-                try {
-                    if (response.code() == 201) {
-
-                        s = response.body().string();
-                        Intent intent = new Intent(Cadastro2Activity.this, LoginActivity.class);
-                        startActivity(intent);
-
-                    }else {
-                        s = response.errorBody().string();
-                        Log.e("Chamada", s);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (s != null){
-                    try {
-                        JSONObject jsonObject = new JSONObject(s);
-                        final Snackbar snackbar = showSnackbar(constraintLayoutCadas, Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                        View view = snackbar.getView();
-                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                        tv.setText(jsonObject.getString("message"));
 
 
-                    }catch (JSONException e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Call", "Error", t);
-            }
-        });
-
-    }// final registerUser()
+    }
 
     public static boolean isValidPassword(String s) {
         Pattern PASSWORD_PATTERN
@@ -216,35 +161,6 @@ public class  Cadastro2Activity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)Cadastro2Activity.this.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
     }
 
 }
