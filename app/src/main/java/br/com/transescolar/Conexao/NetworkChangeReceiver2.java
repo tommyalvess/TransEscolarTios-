@@ -7,8 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import static br.com.transescolar.Activies.PerfilActivity.dialogP;
-
 public class NetworkChangeReceiver2 extends BroadcastReceiver {
 
     private static int TYPE_WIFI = 1;
@@ -22,10 +20,10 @@ public class NetworkChangeReceiver2 extends BroadcastReceiver {
         try
         {
             if (isOnline(context) || isNetworkConnected(context)) {
-                dialogP(true, context);
+                //dialogP(true, context);
                 Log.e("Conexão", "Online Connect Intenet ");
             } else {
-                dialogP(false, context);
+                //dialogP(false, context);
                 Log.e("Conexão", "Conectivity Failure !!! ");
 
             }

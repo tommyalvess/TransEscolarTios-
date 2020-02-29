@@ -6,12 +6,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,16 +28,17 @@ import br.com.transescolar.controler.TioControler;
 import br.com.transescolar.model.Tios;
 
 import static br.com.transescolar.API.URL.URL_LOGIN;
+import static br.com.transescolar.API.URL.URL_READ;
 import static br.com.transescolar.Activies.LoginActivity.btnLogin;
 import static br.com.transescolar.Activies.LoginActivity.loginProgress;
 import static br.com.transescolar.Activies.LoginActivity.sessionManager;
+
 import static com.android.volley.VolleyLog.TAG;
 
-public class DataSourceLogin {
+public class DataSourceTio {
 
-    public boolean sessionTio(Tios objTio, Context context){
+    public boolean sessionTio(final Tios objTio, final Context context){
         //TODO: logando tio
-        
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
                 new Response.Listener<String>() {
                     @Override
@@ -64,7 +67,6 @@ public class DataSourceLogin {
                                             objTio.getCpf(), objTio.getApelido(), objTio.getPlaca(), objTio.getTell(),
                                             objTio.getImg());
                                     sessionManager.createSessionStatus("notChecked");
-
 
                                     Intent intent = new Intent(context, HomeActivity.class);
                                     intent.putExtra("idTios", objTio.getId());
@@ -119,4 +121,6 @@ public class DataSourceLogin {
 
         return true;
     }
+
+
 }

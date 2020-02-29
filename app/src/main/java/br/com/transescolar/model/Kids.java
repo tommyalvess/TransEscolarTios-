@@ -21,6 +21,9 @@ public class Kids implements Serializable {
     @SerializedName("embarque") private String embarque;
     @SerializedName("desembarque") private String desembarque;
 
+    public Kids() {
+    }
+
     public Kids(String nome, String periodo, String escola, String endereco, String pais, String dtnasc, String img, String status) {
         this.nome = nome;
         this.periodo = periodo;

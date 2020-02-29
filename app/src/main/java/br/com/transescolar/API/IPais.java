@@ -13,6 +13,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
+import static br.com.transescolar.API.URL.BASE_SEARCH;
+
 public interface    IPais {
 
     @GET("pessoa")
@@ -56,7 +58,7 @@ public interface    IPais {
     );
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://apptransescolar.com.br/retrofit/GET/")
+            .baseUrl(BASE_SEARCH)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 

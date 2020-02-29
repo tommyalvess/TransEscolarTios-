@@ -75,6 +75,8 @@ import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static br.com.transescolar.controler.HomeControler.showSnackbarC;
+
 public class HomeActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
@@ -94,7 +96,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     ToggleButton locationI;
 
     static ConstraintLayout constraintLayout;
-    DocumentReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
-        //OneSignalll
+        //TODO: OneSignalll, inicinado
         OneSignal.startInit(this).init();
 
         // pegar infs da session
@@ -122,8 +123,8 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         HashMap<String, String> status = sessionManager.getStatus();
         getStatus = status.get(sessionManager.STATUS);
 
+        //TODO: OneSignalll, pegando os dado e enviando
         LoggedIn_User_Email = getCpf;
-
         OneSignal.sendTag("User_ID", LoggedIn_User_Email);
 
         imgPass = findViewById(R.id.passageiros);
@@ -132,6 +133,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
         imgUsuario = findViewById(R.id.user);
         imgPais = findViewById(R.id.pais);
 
+        //TODO: Recebendo informação sobre conexão com a net.
         mNetworkReceiver = new NetworkChangeReceiver();
         registerNetworkBroadcastForNougat();
 
@@ -144,16 +146,11 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // The toggle is enabled, change the heart color to red
                     locationI.setBackgroundResource(R.drawable.location);
                     connectDriver();
-//                    Toast toast= Toast.makeText(HomeActivity.this, "Você está ON Line", Toast.LENGTH_SHORT);
-//                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                    toast.show();
+
                 } else {
                     // The toggle is disabled, change to the default heart
                     disconnectDriver();
                     locationI.setBackgroundResource(R.drawable.locationoff);
-//                    Toast toast= Toast.makeText(HomeActivity.this, "Você está OFF Line", Toast.LENGTH_SHORT);
-//                    toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                    toast.show();
                 }
             }
         });
@@ -342,7 +339,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         } else {
                             Log.d("Chamada", "onComplete: current location is null");
-                            snackbar = showSnackbar(constraintLayout, Snackbar.LENGTH_INDEFINITE, HomeActivity.this);
+                            snackbar = showSnackbarC(constraintLayout, Snackbar.LENGTH_INDEFINITE, HomeActivity.this);
                             snackbar.show();
                             View view = snackbar.getView();
                             TextView tv = (TextView) view.findViewById(R.id.textSnack);
@@ -385,7 +382,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                     }
                 } else {
-                    snackbar = showSnackbar(constraintLayout, Snackbar.LENGTH_INDEFINITE, HomeActivity.this);
+                    snackbar = showSnackbarC(constraintLayout, Snackbar.LENGTH_INDEFINITE, HomeActivity.this);
                     snackbar.show();
                     View view = snackbar.getView();
                     TextView tv = (TextView) view.findViewById(R.id.textSnack);
@@ -496,7 +493,7 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
             };
             handler.postDelayed(delayrunnable, 300);
         }else {
-            snackbar = showSnackbar(constraintLayout, Snackbar.LENGTH_INDEFINITE, context);
+            snackbar = showSnackbarC(constraintLayout, Snackbar.LENGTH_INDEFINITE, context);
             snackbar.show();
             View view = snackbar.getView();
             TextView tv = (TextView) view.findViewById(R.id.textSnack);
@@ -561,34 +558,6 @@ public class HomeActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onDestroy() {
         super.onDestroy();
         unregisterNetworkChanges();
-    }
-
-    private static Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration, Context context) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundColor(Color.WHITE);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
     }
 
     private void logoffDriver(){

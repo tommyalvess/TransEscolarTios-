@@ -4,10 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -45,7 +44,7 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
 
-    String novoCpf, cpf1;
+    String cpf1;
 
     ConstraintLayout constraintLayoutRecu;
 
@@ -69,10 +68,9 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cpf1 = editTextCPF.getText().toString().trim();
-
+                cpf1 = editTextCPF.getText().toString();
                 if (!cpf1.isEmpty()) {
-                    getUserDetail(cpf1);
+                    getUserDetail();
                 }else if (cpf1.isEmpty()){
                     editTextCPF.setError("Campo não pode está vazio!");
                     editTextCPF.requestFocus();
@@ -84,13 +82,12 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
     }//oncreate
 
     //Pegar as infs do BD
-    private void getUserDetail(final String cpf){
-        novoCpf = cpf1;
+    private void getUserDetail(){
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_READ_FORGOT,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i("Mensagem GetUserDetail", response);
+                        Log.i("Mensagem GetUserDetail", response.toString());
                         try {
                             JSONObject json = new JSONObject(response);
                             JSONArray nameArray = json.names();
@@ -125,15 +122,13 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
                                     View view = snackbar.getView();
                                     TextView tv = (TextView) view.findViewById(R.id.textSnack);
                                     tv.setText("Usuário Localizado!!!");
-                                    Toast.makeText(RecuperarSenhaActivity.this, "Localizado", Toast.LENGTH_SHORT).show();
                                 }
                             }else {
                                 final Snackbar snackbar = showSnackbar(constraintLayoutRecu, Snackbar.LENGTH_LONG);
                                 snackbar.show();
                                 View view = snackbar.getView();
-                                TextView tv = view.findViewById(R.id.textSnack);
+                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
                                 tv.setText(json.getString("message"));
-                                Toast.makeText(RecuperarSenhaActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         }catch ( JSONException e ) {
                             Log.e("JSON", "Error parsing JSON", e);
@@ -147,9 +142,9 @@ public class RecuperarSenhaActivity extends AppCompatActivity {
                     }
                 }){
             @Override
-            protected Map<String, String> getParams() {
+            protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> param = new HashMap<>();
-                param.put("cpf", cpf);
+                param.put("cpf", cpf1);
                 return param;
             }
         };

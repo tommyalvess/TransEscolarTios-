@@ -14,6 +14,8 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
+import static br.com.transescolar.API.URL.BASE_URL;
+
 public interface ITios {
 
     @FormUrlEncoded
@@ -61,7 +63,7 @@ public interface ITios {
     );
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://apptransescolar.com.br/Slim3RestApi/public/")
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }

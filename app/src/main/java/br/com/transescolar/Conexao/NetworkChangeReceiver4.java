@@ -7,8 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import static br.com.transescolar.Activies.EscolasActivity.dialogE;
-
+import static br.com.transescolar.controler.EscolaControler.dialogE;
 
 public class NetworkChangeReceiver4 extends BroadcastReceiver {
 

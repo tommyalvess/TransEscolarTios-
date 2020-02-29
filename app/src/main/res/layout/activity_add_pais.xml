@@ -8,7 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ColorBGThema"
-    tools:context="br.com.transescolar.Activies.Cadastro2Activity">
+    tools:context="br.com.transescolar.Activies.CadastroTioActivity">
 
     <TextView
         android:id="@+id/textTitulo"

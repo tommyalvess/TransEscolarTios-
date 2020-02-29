@@ -4,11 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-
-import androidx.core.content.ContextCompat;
 import android.util.Log;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 import static br.com.transescolar.Activies.HomeActivity.dialog;
 
 public class NetworkChangeReceiver extends BroadcastReceiver {

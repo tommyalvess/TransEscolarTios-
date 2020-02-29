@@ -2,10 +2,12 @@ package br.com.transescolar.controler;
 
 import android.content.Context;
 
-import br.com.transescolar.datasource.DataSourceLogin;
+import br.com.transescolar.datasource.DataSourceTio;
 import br.com.transescolar.model.Tios;
+import java.util.List;
 
-public class TioControler extends DataSourceLogin {
+
+public class TioControler extends DataSourceTio {
 
     private Tios tio;
 
@@ -17,4 +19,5 @@ public class TioControler extends DataSourceLogin {
         this.tio = objTio;
         sessionTio(objTio, context);
     }
+
 }

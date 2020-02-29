@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.android.volley.AuthFailureError;
@@ -37,6 +38,7 @@ import java.util.Map;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
 import br.com.transescolar.controler.RotaControler;
+import br.com.transescolar.model.Tios;
 import ca.antonious.materialdaypicker.MaterialDayPicker;
 import br.com.transescolar.model.Rota;
 
@@ -61,6 +63,7 @@ public class CadastrarRotaActivity extends AppCompatActivity {
     String markedButtons= "";
 
     Rota objRota;
+    Tios objTios;
     RotaControler rotaControler;
 
 
@@ -76,8 +79,10 @@ public class CadastrarRotaActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         objRota = new Rota();
+        objTios = new Tios();
         rotaControler = new RotaControler();
 
+        //TODO: Pegando os dados do usuario armazenado.
         sessionManager = new SessionManager(this);
         HashMap<String, String> user = sessionManager.getUserDetail();
         getId = user.get(sessionManager.ID);
@@ -88,7 +93,6 @@ public class CadastrarRotaActivity extends AppCompatActivity {
         btnSalvarI = findViewById(R.id.btnSalvarI);
         constraintLayoutCadR = findViewById(R.id.constraintLayoutCadR);
         nomeI.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-
 
         progressBar.setVisibility(View.GONE);
 
@@ -105,11 +109,11 @@ public class CadastrarRotaActivity extends AppCompatActivity {
             public void onClick(View v) {
                //TODO: conexão com Controler
                 popularDadosRota();
-                rotaControler.salvarRota(objRota);
-
-
+                rotaControler.salvarRota(objRota, objTios, CadastrarRotaActivity.this);
             }
         });
+
+        Toast.makeText(this, getId, Toast.LENGTH_SHORT).show();
 
     }//Final do onCreat
 
@@ -140,6 +144,7 @@ public class CadastrarRotaActivity extends AppCompatActivity {
         objRota.setNm_rota(nomeI.getText().toString().trim());
         objRota.setHora(horarioI.getText().toString().trim());
         objRota.setDias(markedButtons);
+        objTios.setId(getId);
 
         if (objRota.getNm_rota().isEmpty()){
             nomeI.setError("Campo não pode ficar vazio");

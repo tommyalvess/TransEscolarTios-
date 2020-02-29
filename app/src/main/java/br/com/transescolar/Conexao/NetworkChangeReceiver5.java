@@ -7,8 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import static br.com.transescolar.Activies.RotaActivity.dialogR;
-
+import static br.com.transescolar.controler.RotaControler.dialogR;
 
 public class NetworkChangeReceiver5 extends BroadcastReceiver {
     private static int TYPE_WIFI = 1;

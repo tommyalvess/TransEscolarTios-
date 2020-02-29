@@ -35,6 +35,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -68,6 +69,9 @@ import java.util.Map;
 import br.com.transescolar.Conexao.NetworkChangeReceiver2;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
+import br.com.transescolar.controler.TioControler;
+import br.com.transescolar.model.Tios;
+import br.com.transescolar.controler.PerfilControler;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static br.com.transescolar.API.URL.URL_COUNTTIOSKIDS;
@@ -75,28 +79,22 @@ import static br.com.transescolar.API.URL.URL_COUNTTIOSPAIS;
 import static br.com.transescolar.API.URL.URL_EDIT;
 import static br.com.transescolar.API.URL.URL_READ;
 import static br.com.transescolar.API.URL.URL_UPLOAD;
+import static br.com.transescolar.controler.HomeControler.showSnackbar;
 
 public class PerfilActivity extends AppCompatActivity {
 
     private static final String TAG = PerfilActivity.class.getSimpleName();
-    static TextView textNomeU;
-    static TextView textEmailU;
-    static TextView textCpfU;
-    static TextView texPlacaU;
-    static TextView textTellU;
-    static TextView tv_name;
-    static TextView txtCountPais;
-    static TextView txtCountKids;
-    static CircleImageView imgPerfilT;
+    public static TextView textNomeU, textEmailU, textCpfU, texPlacaU, textTellU, tv_name;
+    public static TextView txtCountPais;
+    public static TextView txtCountKids;
+    public static CircleImageView imgPerfilT;
     static String getId;
     static String getCpf, img, getApelido, getNome;
     private Bitmap bitmap;
 
-    static SessionManager sessionManager;
+    public static SessionManager sessionManager;
 
-    static RequestOptions cropOptions;
-
-    boolean conectado;
+    public static RequestOptions cropOptions;
 
     private final Handler handler = new Handler();
 
@@ -106,6 +104,10 @@ public class PerfilActivity extends AppCompatActivity {
     static RelativeLayout relativeLayoutPer;
     DocumentReference db;
 
+    PerfilControler perfilControler;
+    TioControler tioControler;
+    Tios tios;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +115,9 @@ public class PerfilActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        perfilControler = new PerfilControler();
+        tioControler =new TioControler();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -141,11 +146,14 @@ public class PerfilActivity extends AppCompatActivity {
         relativeLayoutPer = findViewById(R.id.relativeLayoutPer);
 
         HashMap<String, String> user = sessionManager.getUserDetail();
-        getId = user.get(sessionManager.ID);
-        getCpf = user.get(sessionManager.CPF);
-        img = user.get(sessionManager.IMG);
-        getNome = user.get(sessionManager.NAME);
-        getApelido = user.get(sessionManager.APELIDO);
+
+        final String id = user.get(sessionManager.ID);
+        final String nome = user.get(sessionManager.NAME);
+        final String email = user.get(sessionManager.EMAIL);
+        final String cpf = user.get(sessionManager.CPF);
+        final String tell = user.get(sessionManager.TELL);
+        final String placa = user.get(sessionManager.PLACA);
+        final String apelido = user.get(sessionManager.APELIDO);
 
         cropOptions = new RequestOptions().centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -159,131 +167,16 @@ public class PerfilActivity extends AppCompatActivity {
                 chosseFile();
             }
         });
-
-        getUserDetail(this);
-        countPais(this);
-        countKids(this);
+        getUserDetailSessão(this);
+        perfilControler.countPais(this);
+        perfilControler.countKids(this);
 
     }// onCreate
 
-    //Contar pais
-    private static void countPais(Context context){
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL_COUNTTIOSPAIS,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("Mensagem GetUserDetail", response.toString());
-                        try {
-                            JSONObject json = new JSONObject(response);
-                            String success = json.getString("error");
-                            JSONArray nameArray = json.names();
-                            JSONArray valArray = json.toJSONArray( nameArray );
-                            if (success.equals("OK")){
-                                for (int i = 0; i < valArray.length(); i++) {
-                                    JSONObject object = valArray.getJSONObject(i);
-                                    String nome = object.getString("nome").trim();
-
-                                    txtCountPais.setText(nome);
-                                }
-                            }
-                        }catch ( JSONException e ) {
-                            Log.e("JSON", "Error parsing JSON", e);
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("VolleyError", "Error", error);
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> param = new HashMap<>();
-                param.put("idTios", getId);
-                return param;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
-    }
-
-    private static void countKids(Context context){
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_COUNTTIOSKIDS,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("Mensagem GetUserDetail", response.toString());
-                        try {
-                            JSONObject json = new JSONObject(response);
-                            String success = json.getString("error");
-                            JSONArray nameArray = json.names();
-                            JSONArray valArray = json.toJSONArray( nameArray );
-                            if (success.equals("OK")){
-                                for (int i = 0; i < valArray.length(); i++) {
-                                    JSONObject object = valArray.getJSONObject(i);
-                                    String nome = object.getString("nome").trim();
-
-                                    txtCountKids.setText(nome);
-                                }
-                            }
-                        }catch ( JSONException e ) {
-                            Log.e("JSON", "Error parsing JSON", e);
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("VolleyError", "Error", error);
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> param = new HashMap<>();
-                param.put("idTios", getId);
-                return param;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
-    }
-
-    //Dialo para sair da tele
-    private void dialogExit(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        View mView = getLayoutInflater().inflate(R.layout.dialog_text, null);
-        final TextView nomeE = mView.findViewById(R.id.nomeD);
-        nomeE.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        Button mSim = mView.findViewById(R.id.btnSim);
-        Button mNao = mView.findViewById(R.id.btnNao);
-
-        alertDialog.setView(mView);
-        final AlertDialog dialog = alertDialog.create();
-
-        nomeE.setText("Você deseja realmente sair?");
-        mSim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sessionManager.logout();
-                Intent intent = new Intent(PerfilActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-                dialog.dismiss();
-            }
-        });
-        mNao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
 
     //Pegar inf da sessão
-    private static void getUserDetailSessão(Context context){
+    public static void getUserDetailSessão(Context context){
         HashMap<String, String> user = sessionManager.getUserDetail();
         String nNome = user.get(sessionManager.NAME);
         String nEmail = user.get(sessionManager.EMAIL);
@@ -301,12 +194,11 @@ public class PerfilActivity extends AppCompatActivity {
         textTellU.setText(nTell);
 
         Glide.with(context).load(nIMG).apply(cropOptions).into(imgPerfilT);
-
-
     }
 
     //Pegar as infs do BD
-    private static void getUserDetail(final Context context){
+    public void getUserDetail(final Context context){
+        //TODO: Pegando dados do BD
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_READ,
                 new Response.Listener<String>() {
                     @Override
@@ -352,13 +244,14 @@ public class PerfilActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> param = new HashMap<>();
-                param.put("idTios", getId);
+                param.put("idTios", tios.getId());
                 return param;
             }
         };
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -377,22 +270,10 @@ public class PerfilActivity extends AppCompatActivity {
         return true;
     };
 
-    public  boolean verificaConexao() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-            conectado = true;
-        }
-        else
-            conectado = false;
-        return conectado;
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -421,48 +302,9 @@ public class PerfilActivity extends AppCompatActivity {
                 Log.e("Erro", "Upload", e);
             }
 
-            UploadPicture(getId, getCpf, getStringImage(bitmap));
+            perfilControler.UploadPicture(getId, getCpf, getStringImage(bitmap), PerfilActivity.this);
 
         }
-    }
-
-    //Fazer o Upload da foto
-    private void UploadPicture(final String id, final String cpf, final String photo) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_UPLOAD,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("Mensagem Upload", response.toString());
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String success = jsonObject.getString("success");
-
-                            if (success.equals("OK")){
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.e("Erro", "Upload", e);
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("idTios", id);
-                params.put("cpf", cpf);
-                params.put("img", photo);
-
-                return params;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
     }
 
     public String getStringImage(Bitmap bitmap){
@@ -757,7 +599,6 @@ public class PerfilActivity extends AppCompatActivity {
 
         HashMap<String, String> user = sessionManager.getUserDetail();
         String nPlaca = user.get(sessionManager.PLACA);
-        String nId = user.get(sessionManager.ID);
 
         View mView = getLayoutInflater().inflate(R.layout.dialog_placa, null);
         final EditText placaE = (EditText) mView.findViewById(R.id.nomeD);
@@ -874,7 +715,7 @@ public class PerfilActivity extends AppCompatActivity {
             public void onClick(View v) {
                 HashMap<String, String> user = sessionManager.getUserDetail();
 
-                final String id = getId;
+                final String id = user.get(sessionManager.ID);
                 final String nome = user.get(sessionManager.NAME);
                 final String email = user.get(sessionManager.EMAIL);
                 final String cpf = user.get(sessionManager.CPF);
@@ -918,7 +759,7 @@ public class PerfilActivity extends AppCompatActivity {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> params = new HashMap<>();
-                        params.put("idTios", getId);
+                        params.put("idTios", id);
                         params.put("nome", nome);
                         params.put("email", email);
                         params.put("cpf", getCpf);
@@ -934,6 +775,7 @@ public class PerfilActivity extends AppCompatActivity {
         dialog.show();
     }
 
+
     public void alterarSenha(MenuItem item) {
         Intent intent = new Intent(PerfilActivity.this, AlterarSenhaActivity.class);
         startActivity(intent);
@@ -944,37 +786,9 @@ public class PerfilActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // update your listview
-            getUserDetail(context);
+            getUserDetail(PerfilActivity.this);
         }
     };
-
-    public static void dialogP(boolean value, final Context context){
-
-        if(value){
-            snackbar.dismiss();
-            getUserDetail(context);
-            countPais(context);
-            countKids(context);
-
-            Handler handler = new Handler();
-            Runnable delayrunnable = new Runnable() {
-                @Override
-                public void run() {
-                    snackbar.dismiss();
-                }
-            };
-            handler.postDelayed(delayrunnable, 300);
-        }else {
-            getUserDetailSessão(context);
-            txtCountPais.setText("0");
-            txtCountKids.setText("0");
-            snackbar = showSnackbar(relativeLayoutPer, Snackbar.LENGTH_INDEFINITE, context);
-            snackbar.show();
-            View view = snackbar.getView();
-            TextView tv = (TextView) view.findViewById(R.id.textSnack);
-            tv.setText("Sem conexão a internet!");
-        }
-    }
 
 
     private void registerNetworkBroadcastForNougat() {
@@ -1000,32 +814,5 @@ public class PerfilActivity extends AppCompatActivity {
         unregisterNetworkChanges();
     }
 
-    private static Snackbar showSnackbar(RelativeLayout coordinatorLayout, int duration, Context context) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundColor(Color.WHITE);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
-    }
 
 }

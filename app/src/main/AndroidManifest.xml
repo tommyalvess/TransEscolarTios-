@@ -31,7 +31,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activies.AddKidsActivity"></activity>
+        <activity android:name=".Activies.AlterarSenhaActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.transescolar.Activies.PerfilActivity" />
+        </activity>
+        <activity android:name=".Activies.AddKidsActivity" />
         <activity
             android:name=".Activies.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -111,7 +122,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.PassageirosActivity" />
         </activity>
-        <activity android:name=".Activies.Cadastro2Activity">
+        <activity android:name=".Activies.CadastroTioActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.HomeActivity" />
@@ -126,18 +137,12 @@
             android:theme="@android:style/ThemeOverlay.Material"
             tools:ignore="NewApi"
             tools:targetApi="lollipop" />
-        <activity android:name=".Activies.EscolaSearchActivity" />
         <activity
             android:name=".Activies.InfPaisActivity"
             android:parentActivityName=".Activies.PaisActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.PaisActivity" />
-        </activity>
-        <activity android:name=".Activies.AlterarSenhaActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="br.com.transescolar.Activies.PerfilActivity" />
         </activity>
         <activity android:name=".Activies.RecuperarSenhaActivity" />
         <activity android:name=".Activies.ResetSenhaActivity" />

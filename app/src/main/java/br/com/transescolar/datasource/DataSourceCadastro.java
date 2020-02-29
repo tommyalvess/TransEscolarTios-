@@ -15,7 +15,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import br.com.transescolar.API.ApiClient;
-import br.com.transescolar.Activies.Cadastro2Activity;
+import br.com.transescolar.Activies.CadastroTioActivity;
 import br.com.transescolar.Activies.LoginActivity;
 import br.com.transescolar.R;
 import br.com.transescolar.model.Tios;
@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DataSourceTios {
+public class DataSourceCadastro {
 
     private Context context;
 
@@ -48,7 +48,7 @@ public class DataSourceTios {
 
                         s = response.body().string();
                         Intent intent = new Intent(context, LoginActivity.class);
-                        DataSourceTios.this.context.startActivity(intent);
+                        DataSourceCadastro.this.context.startActivity(intent);
 
                     }else {
                         s = response.errorBody().string();

@@ -181,4 +181,4 @@ public class AlterarSenhaActivity extends AppCompatActivity {
         snackBarView.addView(snackView, 0);
         return snackbar;
     }
-}//class
+}

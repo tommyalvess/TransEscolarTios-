@@ -7,7 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import static br.com.transescolar.Activies.PassageirosActivity.dialogPas;
+import static br.com.transescolar.controler.PassageirosControler.dialogPas;
 
 public class NetworkChangeReceiver3 extends BroadcastReceiver {
 

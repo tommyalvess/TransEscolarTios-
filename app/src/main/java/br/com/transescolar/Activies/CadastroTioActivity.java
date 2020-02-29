@@ -37,7 +37,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class  Cadastro2Activity extends AppCompatActivity {
+import static br.com.transescolar.controler.CadastroControler.isValidPassword;
+
+public class CadastroTioActivity extends AppCompatActivity {
 
     EditText editNome, editCpf, editApelido, editPlaca, editTell, editSenha, editEmail;
     ProgressBar progressBar;
@@ -69,13 +71,14 @@ public class  Cadastro2Activity extends AppCompatActivity {
         editTell =  findViewById(R.id.editTellT);
         editSenha =  findViewById(R.id.editSenhaT);
         editEmail = findViewById(R.id.editEmailT);
-        radiogTios = (RadioGroup) findViewById(R.id.rgTios);
+        radiogTios = findViewById(R.id.rgTios);
         bTios = findViewById(R.id.rbTio);
         bTias = findViewById(R.id.rbTia);
         constraintLayoutCadas = findViewById(R.id.constraintLayoutCadas);
+
+        //Formatando a primeira letra de cada palavra para maiuscula
         editNome.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         editApelido.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-
 
         findViewById(R.id.btnSaveCadastro).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,17 +143,20 @@ public class  Cadastro2Activity extends AppCompatActivity {
             editEmail.requestFocus();
             return;
         }
+        if (objTios.getSenha().isEmpty()){
+            editEmail.setError("Insira um email!");
+            editEmail.requestFocus();
+            return;
+        }
+        if (isValidPassword(objTios.getSenha())){
+            editEmail.setError("A senha não é valido!");
+            editEmail.requestFocus();
+            return;
+        }
 
 
     }
 
-    public static boolean isValidPassword(String s) {
-        Pattern PASSWORD_PATTERN
-                = Pattern.compile(
-                "[a-zA-Z0-9\\!\\@\\#\\$]{8,24}"
-        );
-        return !TextUtils.isEmpty(s) && PASSWORD_PATTERN.matcher(s).matches();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

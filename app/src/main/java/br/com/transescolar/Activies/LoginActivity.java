@@ -103,9 +103,6 @@ public class LoginActivity extends AppCompatActivity {
                     tioControler.logarTio(objTio, LoginActivity.this);
                 }
 
-
-
-                //login(cpf,senha);
             }
         });
 
@@ -122,93 +119,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    private void login(final String cpf, final String senha) {
-        loginProgress.setVisibility(View.VISIBLE);
-        btnLogin.setVisibility(View.GONE);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                              JSONObject json = new JSONObject(response);
-                              JSONArray nameArray = json.names();
-                              JSONArray valArray = json.toJSONArray( nameArray );
-                              String success = json.getString("error");
-
-
-                            if (success.equals("OK")){
-
-                              for ( int i = 0; i < valArray.length(); i++) {
-                                  JSONObject object = valArray.getJSONObject(i);
-                                  String id = object.getString("idTios").trim();
-                                  String nome = object.getString("nome").trim();
-                                  String email = object.getString("email").trim();
-                                  String cpf = object.getString("cpf").trim();
-                                  String apelido = object.getString("apelido").trim();
-                                  String placa = object.getString("placa").trim();
-                                  String tell = object.getString("tell").trim();
-                                  String img = object.getString("img").trim();
-
-                                  sessionManager.createSession(id, nome, email, cpf, apelido, placa, tell, img);
-                                  sessionManager.createSessionStatus("notChecked");
-
-                                  Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                  intent.putExtra("idTios", id);
-                                  intent.putExtra("nome", nome);
-                                  intent.putExtra("email", email);
-                                  intent.putExtra("cpf", cpf);
-                                  intent.putExtra("apelido", apelido);
-                                  intent.putExtra("placa", placa);
-                                  intent.putExtra("tell", tell);
-                                  intent.putExtra("img", tell);
-                                  startActivity(intent);
-
-                                  loginProgress.setVisibility(View.GONE);
-                                  btnLogin.setVisibility(View.VISIBLE);
-                                  finish();
-
-                              }
-                          }else if(success.equals("falhou")) {
-                                Toast.makeText(LoginActivity.this,json.getString("message"),Toast.LENGTH_LONG).show();
-                                loginProgress.setVisibility(View.GONE);
-                                btnLogin.setVisibility(View.VISIBLE);
-
-                          }
-                        }catch ( JSONException e ) {
-                            loginProgress.setVisibility(View.GONE);
-                            btnLogin.setVisibility(View.VISIBLE);
-                            Log.e("JSON", "Error parsing JSON", e);
-                        }
-
-                        Log.e(TAG, "response: " + response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        loginProgress.setVisibility(View.GONE);
-                        btnLogin.setVisibility(View.VISIBLE);
-                        Toast.makeText(LoginActivity.this, "Opss!! Sem Conexão a internet", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "response: " + error);
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() {
-
-                Map<String, String> param = new HashMap<>();
-                param.put("cpf", cpf);
-                param.put("senha", senha);
-                return param;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
 
     public void Cadastro(View view) {
-        Intent intent = new Intent(LoginActivity.this, Cadastro2Activity.class);
+        Intent intent = new Intent(LoginActivity.this, CadastroTioActivity.class);
         startActivity(intent);
     }
 

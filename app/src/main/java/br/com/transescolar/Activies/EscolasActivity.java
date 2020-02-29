@@ -31,6 +31,7 @@ import java.util.List;
 import br.com.transescolar.API.ApiClient;
 import br.com.transescolar.API.IEscolas;
 import br.com.transescolar.Adapter.EscolaAdapter;
+import br.com.transescolar.controler.EscolaControler;
 import br.com.transescolar.model.Escolas;
 import br.com.transescolar.Conexao.NetworkChangeReceiver4;
 import br.com.transescolar.R;
@@ -41,17 +42,16 @@ import retrofit2.Response;
 
 public class EscolasActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    public static RecyclerView recyclerView;
     private List<Escolas> contacts;
     private EscolaAdapter adapter;
     private IEscolas apiInterface;
-    ProgressBar progressBar;
-    TextView search;
-    String[] item;
+    public static ProgressBar progressBarEs;
     private NetworkChangeReceiver4 mNetworkReceiver;
-    static Snackbar snackbar;
-    static RelativeLayout relativeLayoutEs;
+    public static Snackbar snackbar;
+    public static RelativeLayout relativeLayoutEs;
+
+    EscolaControler escolaControler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,45 +62,24 @@ public class EscolasActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);      //Ativar o botão
             getSupportActionBar().setTitle("Escolas");     //Titulo para ser exibido na sua Action Bar em frente à seta
 
+            escolaControler = new EscolaControler();
+
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
             mNetworkReceiver = new NetworkChangeReceiver4();
             registerNetworkBroadcastForNougat();
 
             relativeLayoutEs = findViewById(R.id.relativeLayoutEs);
-            progressBar = findViewById(R.id.progess);
+            progressBarEs = findViewById(R.id.progess);
             recyclerView = findViewById(R.id.escolaList);
-            //layoutManager = new LinearLayoutManager(this);
             GridLayoutManager layoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false);
-            //layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setHasFixedSize(true);
-            fetchEscolas("users", "");
 
-        }
+            escolaControler.fetchEscolas("users", "", this);
 
-    private void fetchEscolas(String type, String key) {
-
-        apiInterface = ApiClient.getApiClient().create(IEscolas.class);
-
-        Call<List<Escolas>> call = apiInterface.getEscolas(type, key);
-        call.enqueue(new Callback<List<Escolas>>() {
-            @Override
-            public void onResponse(Call<List<Escolas>> call, Response<List<Escolas>> response) {
-                progressBar.setVisibility(View.GONE);
-                contacts = response.body();
-                adapter = new EscolaAdapter(contacts, EscolasActivity.this);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<List<Escolas>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                Log.e("Chamada", "Erro", t);
-            }
-        });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -114,38 +93,17 @@ public class EscolasActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                fetchEscolas("users", query);
+                escolaControler.fetchEscolas("users", query, EscolasActivity.this);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                fetchEscolas("users", newText);
+                escolaControler.fetchEscolas("users", newText, EscolasActivity.this);
                 return false;
             }
         });
         return true;
-    }
-
-    public static void dialogE(boolean value, final Context context){
-
-        if(value){
-            snackbar.dismiss();
-            Handler handler = new Handler();
-            Runnable delayrunnable = new Runnable() {
-                @Override
-                public void run() {
-                    snackbar.dismiss();
-                }
-            };
-            handler.postDelayed(delayrunnable, 300);
-        }else {
-            snackbar = showSnackbar(relativeLayoutEs, Snackbar.LENGTH_INDEFINITE, context);
-            snackbar.show();
-            View view = snackbar.getView();
-            TextView tv = (TextView) view.findViewById(R.id.textSnack);
-            tv.setText("Sem conexão a internet!");
-        }
     }
 
     private void registerNetworkBroadcastForNougat() {
@@ -171,34 +129,5 @@ public class EscolasActivity extends AppCompatActivity {
         unregisterNetworkChanges();
     }
 
-
-    private static Snackbar showSnackbar(RelativeLayout coordinatorLayout, int duration, Context context) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
-    }
 
 }// fim da Activity

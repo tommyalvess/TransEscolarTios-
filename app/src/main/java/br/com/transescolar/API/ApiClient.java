@@ -11,9 +11,6 @@ import static br.com.transescolar.API.URL.BASE_SEARCH;
 
 public class    ApiClient {
 
-//    private static final String BASE_URL = "http://apsconsigpromotora.com.br/Slim3RestApi/public/";
-//    private static final String BASE_SEARCH = "http://192.168.1.107/retrofit/GET/";
-
     private static ApiClient mInstance;
     private static Retrofit retrofit;
 
@@ -47,7 +44,7 @@ public class    ApiClient {
                     .setLenient()
                     .create();
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://apptransescolar.com.br/retrofit/GET/")
+                    .baseUrl(BASE_SEARCH)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }

@@ -1,13 +1,15 @@
 package br.com.transescolar.model;
 
-public class Tios {
+import java.io.Serializable;
+
+public class Tios implements Serializable {
     private String id, nome, email, cpf, apelido, placa, tell, senha, img;
     private int idT;
 
     public Tios() {
     }
 
-    public Tios(String id, String nome, String email, String cpf, String apelido, String placa, String tell, String senha, String img) {
+    public Tios(String id, String nome, String email, String cpf, String apelido, String placa, String tell,String img) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -15,7 +17,6 @@ public class Tios {
         this.apelido = apelido;
         this.placa = placa;
         this.tell = tell;
-        this.senha = senha;
         this.img = img;
 
     }

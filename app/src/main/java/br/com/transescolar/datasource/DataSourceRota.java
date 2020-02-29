@@ -34,13 +34,8 @@ import static br.com.transescolar.Activies.CadastrarRotaActivity.progressBar;
 
 public class DataSourceRota {
 
-    private Context context;
-    private Tios objTio;
-
-    public boolean inserirDadosRota(Rota objRota){
+    public boolean inserirDadosRota(final Rota objRota, final Tios objTio, final Context context){
         //TODO: Adicionar Tios
-
-        objTio = new Tios();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGIST_ROTA,
                 new com.android.volley.Response.Listener<String>() {
@@ -48,19 +43,15 @@ public class DataSourceRota {
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
-                            //boolean success = jsonObject.getBoolean("success");
                             String success = jsonObject.getString("success");
-                            //JSONArray success = jsonObject.getJSONArray("success");
-
 
                             if (success.equals("OK")){
                                 Intent intent = new Intent(context, RotaActivity.class);
-                                DataSourceRota.this.context.startActivity(intent);
+                                context.startActivity(intent);
                                 progressBar.setVisibility(View.GONE);
                             }else {
                                 Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
-                                //btnSalvarI.setVisibility(View.VISIBLE);
 
                             }
 
@@ -78,13 +69,14 @@ public class DataSourceRota {
                         progressBar.setVisibility(View.GONE);
                     }
                 }){
+
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("nm_rota", objRota.getNm_rota());
                 params.put("hora", objRota.getHora());
                 params.put("dias", objRota.getDias());
-                params.put("idTios", String.valueOf(objTio.getId()));
+                params.put("idTios", objTio.getId());
                 return params;
             }
         };
