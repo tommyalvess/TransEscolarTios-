@@ -23,9 +23,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-
 import static br.com.transescolar.Activies.RotaActivity.constraintLayoutRota;
 import static br.com.transescolar.Activies.RotaActivity.progressBarR;
 import static br.com.transescolar.Activies.RotaActivity.snackbar;

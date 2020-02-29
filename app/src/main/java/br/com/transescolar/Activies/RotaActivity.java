@@ -15,9 +15,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,12 +46,6 @@ import br.com.transescolar.model.Tios;
 import br.com.transescolar.Conexao.NetworkChangeReceiver5;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static br.com.transescolar.controler.HomeControler.showSnackbar;
-import static br.com.transescolar.controler.HomeControler.showSnackbarC;
 
 public class RotaActivity extends AppCompatActivity {
 
