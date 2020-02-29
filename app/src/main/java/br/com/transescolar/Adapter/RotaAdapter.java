@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +38,7 @@ import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
 
 import static br.com.transescolar.API.URL.URL_DELETA_ROTA;
-import static br.com.transescolar.Adapter.RotaInfAdapter.MyViewHolder.swipeLayout;
+import static br.com.transescolar.Adapter.RotaAdapter.MyViewHolder.swipeLayout;
 
 public class RotaAdapter extends RecyclerSwipeAdapter<RotaAdapter.MyViewHolder> {
 

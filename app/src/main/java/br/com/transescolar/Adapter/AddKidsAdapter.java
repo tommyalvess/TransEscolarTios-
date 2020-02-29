@@ -1,16 +1,16 @@
 package br.com.transescolar.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
+
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +39,28 @@ import static br.com.transescolar.API.URL.URL_ADD_KIDS_ROTA;
 import static br.com.transescolar.Adapter.AddKidsAdapter.MyViewHolder.swipeLayout;
 
 public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHolder> {
+
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
+
+        private final Context context;
+        TextView txtHora, txtNomeRota, txtDias, Delete, ADD;
+        static SwipeLayout swipeLayout;
+        CircleImageView imgPass;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+
+            context = itemView.getContext();
+            txtNomeRota = itemView.findViewById(R.id.txtNome);
+            txtDias = itemView.findViewById(R.id.txtEmbarque);
+            txtHora = itemView.findViewById(R.id.txtStatus);
+            ADD = itemView.findViewById(R.id.ADD);
+            imgPass = itemView.findViewById(R.id.imgPerfilT);
+            swipeLayout = itemView.findViewById(R.id.swipe);
+
+        }
+    }
+
     private List<Kids> contacts;
     private Context context;
     String getId, getIdKids;
@@ -109,24 +130,12 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
                                            notifyItemRemoved(position);
                                            notifyItemRangeChanged(position, contacts.size());
                                            mItemManger.closeAllItems();
-//                                           Toast toast= Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG);
-//                                           toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                                           toast.show();
 
-                                           final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                                           snackbar.show();
-                                           View view = snackbar.getView();
-                                           TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                                           tv.setText(jsonObject.getString("message"));
+                                           Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                                        }else {
-                                           final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                                           snackbar.show();
-                                           View view = snackbar.getView();
-                                           TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                                           tv.setText(jsonObject.getString("message"));
-//                                           Toast toast= Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG);
-//                                           toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                                           toast.show();
+
+                                           Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+
                                        }
 
                                    } catch (JSONException e1) {
@@ -160,35 +169,6 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
 
     }
 
-    private Snackbar showSnackbar(SwipeLayout coordinatorLayout, int duration) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
-    }
-
     @Override
     public int getItemCount() {
         return contacts.size();
@@ -199,26 +179,4 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
         return R.id.swipe;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
-
-        private final Context context;
-        TextView txtHora, txtNomeRota, txtDias, Delete, ADD;
-        static SwipeLayout swipeLayout;
-        CircleImageView imgPass;
-        static ConstraintLayout constraintLayou;
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-
-            context = itemView.getContext();
-            txtNomeRota = itemView.findViewById(R.id.txtNome);
-            txtDias = itemView.findViewById(R.id.txtEmbarque);
-            txtHora = itemView.findViewById(R.id.txtStatus);
-            ADD = itemView.findViewById(R.id.ADD);
-            imgPass = itemView.findViewById(R.id.imgPerfilT);
-            swipeLayout = itemView.findViewById(R.id.swipe);
-            constraintLayou = itemView.findViewById(R.id.constraintLayoutAddKids);
-
-        }
-    }
 }

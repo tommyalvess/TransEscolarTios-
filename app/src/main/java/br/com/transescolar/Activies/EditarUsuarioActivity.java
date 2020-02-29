@@ -1,11 +1,12 @@
 package br.com.transescolar.Activies;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +31,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.transescolar.API.URL;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
 
@@ -42,10 +45,6 @@ public class EditarUsuarioActivity extends AppCompatActivity {
     SessionManager sessionManager;
     String getId;
     ProgressBar progess;
-
-//    private static String URL_READ = "http://apsconsigpromotora.com.br/apiapptransescolar/read_tios.php?apicall=findAll";
-//    private static String URL_EDIT = "http://apsconsigpromotora.com.br/apiapptransescolar/edit_detail.php";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,8 +162,7 @@ public class EditarUsuarioActivity extends AppCompatActivity {
                                 fab.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Snackbar.make(view, "Alterado com Sucesso!", Snackbar.LENGTH_LONG)
-                                                .setAction("Action", null).show();
+                                        Toast.makeText(EditarUsuarioActivity.this, "Alterado com Sucesso!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 Toast.makeText(EditarUsuarioActivity.this,jsonObject.getString("message"),Toast.LENGTH_LONG).show();
@@ -174,8 +172,8 @@ public class EditarUsuarioActivity extends AppCompatActivity {
                                 fab.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        Snackbar.make(view, "Opss! Algo deu errado!", Snackbar.LENGTH_LONG)
-                                                .setAction("Action", null).show();
+
+                                        Toast.makeText(EditarUsuarioActivity.this, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 progess.setVisibility(View.GONE);

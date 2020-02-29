@@ -9,7 +9,7 @@ import android.os.StrictMode;
 import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -50,6 +51,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static br.com.transescolar.API.URL.URL_DELETA_PAI;
 import static br.com.transescolar.Adapter.PaiAdapter.MyViewHolder.swipeLayout;
+
 
 public class PaiAdapter extends RecyclerSwipeAdapter<PaiAdapter.MyViewHolder> {
 
@@ -140,15 +142,8 @@ public class PaiAdapter extends RecyclerSwipeAdapter<PaiAdapter.MyViewHolder> {
                                                 mItemManger.closeAllItems();
                                                 dialog.dismiss();
                                             }else {
-//                                                Toast toast= Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG);
-//                                                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                                                toast.show();
 
-                                                final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                                                snackbar.show();
-                                                View view = snackbar.getView();
-                                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                                                tv.setText(jsonObject.getString("message"));
+                                                Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
                                                 dialog.dismiss();
                                             }
@@ -211,11 +206,8 @@ public class PaiAdapter extends RecyclerSwipeAdapter<PaiAdapter.MyViewHolder> {
                     public void onClick(DialogInterface dialog, int item) {
                         // Do something with the selection
                         if (item == 0){
-                            final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                            snackbar.show();
-                            View view = snackbar.getView();
-                            TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                            tv.setText(R.string.mensagem_enviada);
+                            Toast.makeText(context, R.string.mensagem_enviada, Toast.LENGTH_SHORT).show();
+
 
                             AsyncTask.execute(new Runnable() {
                                 @Override
@@ -280,11 +272,8 @@ public class PaiAdapter extends RecyclerSwipeAdapter<PaiAdapter.MyViewHolder> {
                                 }
                             });
                         }else if (item == 1){
-                            final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                            snackbar.show();
-                            View view = snackbar.getView();
-                            TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                            tv.setText(R.string.mensagem_enviada);
+
+                            Toast.makeText(context, R.string.mensagem_enviada, Toast.LENGTH_SHORT).show();
 
                             AsyncTask.execute(new Runnable() {
                                 @Override
@@ -349,11 +338,7 @@ public class PaiAdapter extends RecyclerSwipeAdapter<PaiAdapter.MyViewHolder> {
                                 }
                             });
                         }else if (item == 2){
-                            final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                            snackbar.show();
-                            View view = snackbar.getView();
-                            TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                            tv.setText(R.string.mensagem_enviada);
+                            Toast.makeText(context, R.string.mensagem_enviada, Toast.LENGTH_SHORT).show();
 
                             AsyncTask.execute(new Runnable() {
                                 @Override
@@ -424,35 +409,6 @@ public class PaiAdapter extends RecyclerSwipeAdapter<PaiAdapter.MyViewHolder> {
             }
         });
 
-    }
-
-    private Snackbar showSnackbar(SwipeLayout coordinatorLayout, int duration) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
     }
 
     @Override

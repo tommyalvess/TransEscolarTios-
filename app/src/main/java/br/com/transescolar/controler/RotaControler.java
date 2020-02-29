@@ -3,11 +3,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.swipe.util.Attributes;
 import com.google.android.material.snackbar.Snackbar;
@@ -16,7 +14,6 @@ import java.util.List;
 
 import br.com.transescolar.API.ApiClient;
 import br.com.transescolar.API.IRota;
-import br.com.transescolar.Activies.RotaActivity;
 import br.com.transescolar.Adapter.RotaAdapter;
 import br.com.transescolar.R;
 import br.com.transescolar.datasource.DataSourceRota;
@@ -25,6 +22,9 @@ import br.com.transescolar.model.Tios;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import static br.com.transescolar.Activies.RotaActivity.constraintLayoutRota;
 import static br.com.transescolar.Activies.RotaActivity.progressBarR;
