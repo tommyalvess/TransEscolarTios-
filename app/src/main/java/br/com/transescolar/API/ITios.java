@@ -31,35 +31,10 @@ public interface ITios {
     );
 
     @FormUrlEncoded
-    @POST("createPai")
-    Call<ResponseBody> createPais (
-            @Field("nm_pai") String nome,
-            @Field("email") String email,
-            @Field("cpf") String cpf,
-            @Field("tell") String tell,
-            @Field("senha") String senha,
-            @Field("idTios") String idTios
-    );
-
-    @FormUrlEncoded
     @PUT("updateusername/{id}")
     Call<LoginResponse> updateusername(
         @Path("id") int id,
         @Field("nome") EditText nome
-    );
-
-    @FormUrlEncoded
-    @POST("createKids")
-    Call<ResponseBody> createkids (
-            @Field("nome") String nome,
-            @Field("dt_nas") String data,
-            @Field("end_principal") String end,
-            @Field("periodo") String periodo,
-            @Field("embarque") String embarque,
-            @Field("desembarque") String desembarque,
-            @Field("idTios") int idTios,
-            @Field("idEscola") int idEscola,
-            @Field("idPais") int idPais
     );
 
     Retrofit retrofit = new Retrofit.Builder()

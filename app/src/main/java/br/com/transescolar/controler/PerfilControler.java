@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.transescolar.datasource.DataSourceTio;
 import br.com.transescolar.model.Tios;
 
 import static br.com.transescolar.API.URL.URL_COUNTTIOSKIDS;
@@ -28,7 +29,7 @@ import static br.com.transescolar.API.URL.URL_UPLOAD;
 import static br.com.transescolar.Activies.PerfilActivity.txtCountKids;
 import static br.com.transescolar.Activies.PerfilActivity.txtCountPais;
 
-public class PerfilControler {
+public class PerfilControler extends DataSourceTio {
 
     private Tios tios;
 
@@ -36,7 +37,13 @@ public class PerfilControler {
         this.tios = new Tios();
     }
 
-    //Contar pais
+    public void readPerfil(Tios objTio, Context context){
+        this.tios = objTio;
+        fetchPerfeil(objTio, context);
+        Log.e("Perfil Controle", "Entrada, OK!");
+    }
+
+    //TODO: Contar pais
     public void countPais(Context context){
         //TODO: Pegando countPais do BD
 
@@ -82,7 +89,7 @@ public class PerfilControler {
         requestQueue.add(stringRequest);
     }
 
-    //Contar Kids
+    //TODO: Contar Kids
     public void countKids(Context context){
         //TODO: Pegando countKids do BD
 

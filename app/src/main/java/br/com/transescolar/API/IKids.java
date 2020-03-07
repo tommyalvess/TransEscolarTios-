@@ -15,6 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
+import static br.com.transescolar.API.URL.BASE_URL;
 import static br.com.transescolar.API.URL.URL_ASP;
 
 public interface IKids {
@@ -44,13 +45,13 @@ public interface IKids {
             @Field("periodo") String periodo,
             @Field("embarque") String embarque,
             @Field("desembarque") String desembarque,
-            @Field("idTios") int idTios,
-            @Field("idEscola") int idEscola,
-            @Field("idPais") int idPais
+            @Field("idTios") String idTios,
+            @Field("idEscola") String idEscola,
+            @Field("idPais") String idPais
     );
 
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(URL_ASP)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }

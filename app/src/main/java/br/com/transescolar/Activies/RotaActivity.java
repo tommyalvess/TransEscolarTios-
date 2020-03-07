@@ -99,7 +99,7 @@ public class RotaActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        rotaControler.fetchRotas("users", "", getId, this);
+        rotaControler.readRota("users", "", getId, this);
 
     }// OnCreat
 
@@ -121,13 +121,13 @@ public class RotaActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                rotaControler.fetchRotas("users", query, getId, RotaActivity.this);
+                rotaControler.readRota("users", query, getId, RotaActivity.this);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                rotaControler.fetchRotas("users", newText, getId, RotaActivity.this);
+                rotaControler.readRota("users", newText, getId, RotaActivity.this);
                 return false;
             }
         });

@@ -33,11 +33,6 @@ public class    ApiClient {
         return mInstance;
     }
 
-    public ITios getApi(){
-        return retrofit.create(ITios.class);
-    }
-
-
     public static Retrofit getApiClient(){
         if (retrofit==null){
             Gson gson = new GsonBuilder()
@@ -51,5 +46,16 @@ public class    ApiClient {
         return retrofit;
     }
 
+    //Conectando com Interface
+    public ITios getApiT(){
+        return retrofit.create(ITios.class);
+    }
+
+    public IKids getApiK(){
+        return retrofit.create(IKids.class);
+    }
+    public IRota getApiR(){
+        return retrofit.create(IRota.class);
+    }
 
 }

@@ -14,6 +14,9 @@ public class Pais implements Serializable {
     @SerializedName("img") private String img;
     @SerializedName("status") private String status;
 
+    public Pais() {
+    }
+
     public Pais(int idPais, String nome, String email, String tell, String cpf, String img, String status) {
         this.idPais = idPais;
         this.nome = nome;

@@ -37,6 +37,7 @@ import br.com.transescolar.API.IPais;
 import br.com.transescolar.Adapter.PaiAdapter;
 import br.com.transescolar.Conexao.NetworkChangeReceiver6;
 import br.com.transescolar.Conexao.SessionManager;
+import br.com.transescolar.controler.PaisControler;
 import br.com.transescolar.model.Pais;
 import br.com.transescolar.R;
 import retrofit2.Call;
@@ -46,18 +47,16 @@ import retrofit2.Response;
 
 public class PaisActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    public static RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private List<Pais> pais;
-    private PaiAdapter paiAdapter;
-    private IPais iPai;
-    ProgressBar progressBar;
+    public static ProgressBar progressBar;
     SessionManager sessionManager;
     String getId;
-    private String id;
     static Snackbar snackbar;
     private NetworkChangeReceiver6 mNetworkReceiver;
     static RelativeLayout relativeLayoutPais;
+
+    PaisControler paisControler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,79 +84,12 @@ public class PaisActivity extends AppCompatActivity {
         HashMap<String, String> user = sessionManager.getUserDetail();
         getId = user.get(sessionManager.ID);
 
-        fetchAllPais("users", getId);
+        paisControler = new PaisControler();
+
+        paisControler.readPais("users", getId, this);
 
     }//onCreate
 
-    private void fetchAllPais(String users, String id) {
-        iPai = IPais.retrofit.create(IPais.class);
-
-        final Call<List<Pais>> call = iPai.getTodosPais(users, id);
-
-        call.enqueue(new Callback<List<Pais>>() {
-            @Override
-            public void onResponse(Call<List<Pais>> call, Response<List<Pais>> response) {
-
-                if (!response.body().isEmpty()){
-                    progressBar.setVisibility(View.GONE);
-                    pais = response.body();
-                    paiAdapter = new PaiAdapter(pais, PaisActivity.this);
-                    recyclerView.setAdapter(paiAdapter);
-                    paiAdapter.setMode(Attributes.Mode.Single);
-                    paiAdapter.notifyDataSetChanged();
-                }else {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(PaisActivity.this, "Nenhum pai encontrado!", Toast.LENGTH_SHORT).show();
-//                    snackbar = showSnackbar(relativeLayoutPais, Snackbar.LENGTH_LONG, PaisActivity.this);
-//                    snackbar.show();
-//                    View view = snackbar.getView();
-//                    TextView tv = (TextView) view.findViewById(R.id.textSnack);
-//                    tv.setText("Nenhum pai encontrado!");
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Pais>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                Log.e("Call", "carregar dados", t);
-
-            }
-        });
-    }
-
-    private void fetcPaisBy(String users, String query, String id) {
-        iPai = IPais.retrofit.create(IPais.class);
-
-        final Call<List<Pais>> call = iPai.getPaisBy(users,query, id);
-
-        call.enqueue(new Callback<List<Pais>>() {
-            @Override
-            public void onResponse(Call<List<Pais>> call, Response<List<Pais>> response) {
-
-                if (!response.body().isEmpty()){
-                    progressBar.setVisibility(View.GONE);
-                    pais = response.body();
-                    paiAdapter = new PaiAdapter(pais, PaisActivity.this);
-                    recyclerView.setAdapter(paiAdapter);
-                    paiAdapter.setMode(Attributes.Mode.Single);
-                    paiAdapter.notifyDataSetChanged();
-                }else {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(PaisActivity.this, "Nenhum pai cadastrado!", Toast.LENGTH_SHORT).show();
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Pais>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                Log.e("Call", "carregar dados", t);
-
-            }
-        });
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -171,60 +103,17 @@ public class PaisActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                fetcPaisBy("users", query, getId);
+                paisControler.readPaisBy("users", query, getId, PaisActivity.this);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                fetcPaisBy("users", newText, getId);
+                paisControler.readPaisBy("users", newText, getId, PaisActivity.this);
                 return false;
             }
         });
         return true;
-    }
-
-
-    private void fetchPais() {
-
-        sessionManager = new SessionManager(this);
-
-        HashMap<String, String> user = sessionManager.getUserDetail();
-        getId = user.get(sessionManager.ID);
-        int id = Integer.parseInt(getId);
-        iPai = IPais.retrofit.create(IPais.class);
-
-        final Call<List<Pais>> call = iPai.getPais(id);
-
-        call.enqueue(new Callback<List<Pais>>() {
-            @Override
-            public void onResponse(Call<List<Pais>> call, Response<List<Pais>> response) {
-
-                if (!response.body().isEmpty()){
-                    progressBar.setVisibility(View.GONE);
-                    pais = response.body();
-                    paiAdapter = new PaiAdapter(pais, PaisActivity.this);
-                    recyclerView.setAdapter(paiAdapter);
-                    paiAdapter.setMode(Attributes.Mode.Single);
-                    paiAdapter.notifyDataSetChanged();
-                }else {
-                    progressBar.setVisibility(View.GONE);
-                    snackbar = showSnackbar(relativeLayoutPais, Snackbar.LENGTH_LONG, PaisActivity.this);
-                    snackbar.show();
-                    View view = snackbar.getView();
-                    TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                    tv.setText("Nenhum pai encontrado!");
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Pais>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                Log.e("Call", "carregar dados", t);
-
-            }
-        });
     }
 
     public static void dialogPai(boolean value, final Context context){

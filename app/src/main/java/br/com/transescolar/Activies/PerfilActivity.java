@@ -84,12 +84,9 @@ import static br.com.transescolar.controler.HomeControler.showSnackbar;
 public class PerfilActivity extends AppCompatActivity {
 
     private static final String TAG = PerfilActivity.class.getSimpleName();
-    public static TextView textNomeU, textEmailU, textCpfU, texPlacaU, textTellU, tv_name;
-    public static TextView txtCountPais;
-    public static TextView txtCountKids;
+    public static TextView textNomeU, textEmailU, textCpfU, texPlacaU, textTellU, tv_name, txtCountPais, txtCountKids;
     public static CircleImageView imgPerfilT;
-    static String getId;
-    static String getCpf, img, getApelido, getNome;
+    static String getId, getCpf, nId, nNome,nEmail,nCpf,nApelido,nPlaca,nTell,nIMG;
     private Bitmap bitmap;
 
     public static SessionManager sessionManager;
@@ -118,6 +115,7 @@ public class PerfilActivity extends AppCompatActivity {
 
         perfilControler = new PerfilControler();
         tioControler =new TioControler();
+        tios = new Tios();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -145,15 +143,18 @@ public class PerfilActivity extends AppCompatActivity {
         txtCountKids = findViewById(R.id.txtCountKids);
         relativeLayoutPer = findViewById(R.id.relativeLayoutPer);
 
+        //TODO: PEgando dados da Sessão criada
         HashMap<String, String> user = sessionManager.getUserDetail();
+        nId = user.get(sessionManager.ID);
+        nNome = user.get(sessionManager.NAME);
+        nEmail = user.get(sessionManager.EMAIL);
+        nCpf = user.get(sessionManager.CPF);
+        nApelido = user.get(sessionManager.APELIDO);
+        nPlaca = user.get(sessionManager.PLACA);
+        nTell = user.get(sessionManager.TELL);
+        nIMG = user.get(sessionManager.IMG);
 
-        final String id = user.get(sessionManager.ID);
-        final String nome = user.get(sessionManager.NAME);
-        final String email = user.get(sessionManager.EMAIL);
-        final String cpf = user.get(sessionManager.CPF);
-        final String tell = user.get(sessionManager.TELL);
-        final String placa = user.get(sessionManager.PLACA);
-        final String apelido = user.get(sessionManager.APELIDO);
+        tios.setId(nId);
 
         cropOptions = new RequestOptions().centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -167,7 +168,8 @@ public class PerfilActivity extends AppCompatActivity {
                 chosseFile();
             }
         });
-        getUserDetailSessão(this);
+
+        perfilControler.readPerfil(tios, PerfilActivity.this);
         perfilControler.countPais(this);
         perfilControler.countKids(this);
 
@@ -177,15 +179,6 @@ public class PerfilActivity extends AppCompatActivity {
 
     //Pegar inf da sessão
     public static void getUserDetailSessão(Context context){
-        HashMap<String, String> user = sessionManager.getUserDetail();
-        String nNome = user.get(sessionManager.NAME);
-        String nEmail = user.get(sessionManager.EMAIL);
-        String nCpf = user.get(sessionManager.CPF);
-        String nApelido = user.get(sessionManager.APELIDO);
-        String nPlaca = user.get(sessionManager.PLACA);
-        String nTell = user.get(sessionManager.TELL);
-        String nIMG = user.get(sessionManager.IMG);
-
         textNomeU.setText(nNome);
         textEmailU.setText(nEmail);
         textCpfU.setText(nCpf);
@@ -785,8 +778,7 @@ public class PerfilActivity extends AppCompatActivity {
     private BroadcastReceiver dataChangeReceiver1= new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // update your listview
-            getUserDetail(PerfilActivity.this);
+            perfilControler.readPerfil(tios, PerfilActivity.this);
         }
     };
 

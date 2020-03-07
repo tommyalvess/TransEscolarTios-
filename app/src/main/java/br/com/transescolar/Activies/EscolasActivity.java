@@ -76,7 +76,7 @@ public class EscolasActivity extends AppCompatActivity {
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setHasFixedSize(true);
 
-            escolaControler.fetchEscolas("users", "", this);
+            escolaControler.readEscola("users", "", this);
 
     }
 
@@ -93,13 +93,13 @@ public class EscolasActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                escolaControler.fetchEscolas("users", query, EscolasActivity.this);
+                escolaControler.readEscola("users", query, EscolasActivity.this);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                escolaControler.fetchEscolas("users", newText, EscolasActivity.this);
+                escolaControler.readEscola("users", newText, EscolasActivity.this);
                 return false;
             }
         });

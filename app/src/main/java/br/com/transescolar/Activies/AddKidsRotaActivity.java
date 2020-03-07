@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.swipe.util.Attributes;
 
@@ -104,11 +105,7 @@ public class AddKidsRotaActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }else {
                     progressBar.setVisibility(View.GONE);
-                    final Snackbar snackbar = showSnackbar(constraintLayoutAddKids, Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                    View view = snackbar.getView();
-                    TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                    tv.setText("Nenhum passageiro encontrado!");
+                    Toast.makeText(AddKidsRotaActivity.this, "Nenhum passageiro encontrado!", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -138,7 +135,6 @@ public class AddKidsRotaActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }else {
                     progressBar.setVisibility(View.GONE);
-
                 }
 
 
@@ -192,35 +188,6 @@ public class AddKidsRotaActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)AddKidsRotaActivity.this.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
     }
 
 }

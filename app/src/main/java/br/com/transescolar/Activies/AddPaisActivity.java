@@ -78,8 +78,7 @@ public class AddPaisActivity extends AppCompatActivity {
         findViewById(R.id.btnSaveCadastro).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //if user pressed on button register
-                //here we will register the user to server
+
                 registerUser();
             }
         });

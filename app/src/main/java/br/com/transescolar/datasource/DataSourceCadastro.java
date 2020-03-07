@@ -33,7 +33,7 @@ public class DataSourceCadastro {
 
         Call<ResponseBody> call = ApiClient
                 .getInstance()
-                .getApi()
+                .getApiT()
                 .createuser(objTios.getNome(), objTios.getEmail(), objTios.getCpf(), objTios.getApelido(),
                         objTios.getPlaca(), objTios.getTell(), objTios.getSenha());
 

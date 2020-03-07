@@ -17,6 +17,7 @@ import br.com.transescolar.API.IRota;
 import br.com.transescolar.Adapter.RotaAdapter;
 import br.com.transescolar.R;
 import br.com.transescolar.datasource.DataSourceRota;
+import br.com.transescolar.model.Kids;
 import br.com.transescolar.model.Rota;
 import br.com.transescolar.model.Tios;
 import retrofit2.Call;
@@ -34,6 +35,7 @@ public class RotaControler extends DataSourceRota {
 
     private Rota rota;
     private Tios tios;
+    private Kids kids;
     private List<Rota> contacts;
     private RotaAdapter adapter;
     private IRota apiInterface;
@@ -48,39 +50,16 @@ public class RotaControler extends DataSourceRota {
         inserirDadosRota(objRota, objTios, context);
     }
 
-    //TODO: Busca pela rota
-    public void fetchRotas(String type, String key, String id, final Context context) {
-        apiInterface = ApiClient.getApiClient().create(IRota.class);
+    public void salvarKidsnaRota(Rota objRota, Kids objKids, Context context){
+        this.kids = objKids;
+        this.rota = objRota;
+        inserirKidnaRota(objRota, objKids, context);
 
-        Call<List<Rota>> call = apiInterface.getRotas(type, key, id);
-        call.enqueue(new Callback<List<Rota>>() {
-            @Override
-            public void onResponse(Call<List<Rota>> call, Response<List<Rota>> response) {
-
-                if (!response.body().isEmpty()){
-                    progressBarR.setVisibility(View.GONE);
-                    contacts = response.body();
-                    adapter = new RotaAdapter(contacts, context);
-                    adapter.setMode(Attributes.Mode.Single);
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-
-                }else {
-                    progressBarR.setVisibility(View.GONE);
-                    Toast.makeText(context, "Nenhuma rota localizada!", Toast.LENGTH_LONG).show();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Rota>> call, Throwable t) {
-                progressBarR.setVisibility(View.GONE);
-                Toast.makeText(context, "Oppss! Algo deu errado!", Toast.LENGTH_LONG).show();
-                Log.e("Chamada", "Erro", t);
-            }
-        });
     }
 
+    public void readRota(String type, String key, String id, final Context context){
+        fetchRotas(type, key, id, context);
+    }
     //TODO: Dialogo de conexão com a net
     public static void dialogR(boolean value, final Context context){
 

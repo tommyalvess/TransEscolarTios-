@@ -4,11 +4,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -16,22 +14,22 @@ import java.util.List;
 
 import br.com.transescolar.API.ApiClient;
 import br.com.transescolar.API.IKids;
-import br.com.transescolar.Activies.PassageirosActivity;
 import br.com.transescolar.Adapter.KidsAdpter;
 import br.com.transescolar.R;
+import br.com.transescolar.datasource.DataSourceKids;
 import br.com.transescolar.model.Kids;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static br.com.transescolar.Activies.PassageirosActivity.progressBarPass;
+import static br.com.transescolar.Activies.PassageirosActivity.recyclerView;
 import static br.com.transescolar.Activies.PassageirosActivity.relativeLayoutPass;
 import static br.com.transescolar.Activies.PassageirosActivity.snackbar;
 import static br.com.transescolar.controler.HomeControler.showSnackbar;
 
-public class PassageirosControler {
+public class PassageirosControler extends DataSourceKids {
 
-    private RecyclerView recyclerView;
     private List<Kids> kids;
     private KidsAdpter kidsAdpter;
     private IKids iKids;
@@ -41,62 +39,12 @@ public class PassageirosControler {
         this.passageiros = new Kids();
     }
 
-    public void fetchKid(String type, int id, final Context context) {
-        iKids = ApiClient.getApiClient().create(IKids.class);
-
-        Call<List<Kids>> call = iKids.getKidsById(type, id);
-        call.enqueue(new Callback<List<Kids>>() {
-            @Override
-            public void onResponse(Call<List<Kids>> call, Response<List<Kids>> response) {
-
-                if (!response.body().isEmpty()){
-                    progressBarPass.setVisibility(View.GONE);
-                    kids = response.body();
-                    kidsAdpter = new KidsAdpter(kids, context);
-                    recyclerView.setAdapter(kidsAdpter);
-                    kidsAdpter.notifyDataSetChanged();
-                }else {
-                    progressBarPass.setVisibility(View.GONE);
-                    Toast.makeText(context, "Nenhum passageiro encontrado!", Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Kids>> call, Throwable t) {
-                progressBarPass.setVisibility(View.GONE);
-                Log.e("Chamada", "Erro", t);
-            }
-        });
+    public void readKids(String type, int id, final Context context){
+        fetchKid(type,id, context);
     }
 
-    public void fetchAllKid(String type, String key, int id, final Context context) {
-        iKids = ApiClient.getApiClient().create(IKids.class);
-
-        Call<List<Kids>> call = iKids.getAllKids(type, key, id);
-        call.enqueue(new Callback<List<Kids>>() {
-            @Override
-            public void onResponse(Call<List<Kids>> call, Response<List<Kids>> response) {
-
-                if (!response.body().isEmpty()){
-                    progressBarPass.setVisibility(View.GONE);
-                    kids = response.body();
-                    kidsAdpter = new KidsAdpter(kids, context);
-                    recyclerView.setAdapter(kidsAdpter);
-                    kidsAdpter.notifyDataSetChanged();
-                }else {
-                    progressBarPass.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Kids>> call, Throwable t) {
-                progressBarPass.setVisibility(View.GONE);
-                Toast.makeText(context, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
-                Log.e("Chamada", "Erro", t);
-            }
-        });
+    public void readKidsBy(String type, String key, int id, final Context context){
+        fetchAllKid(type, key, id, context);
     }
 
     public static void dialogPas(boolean value, final Context context){

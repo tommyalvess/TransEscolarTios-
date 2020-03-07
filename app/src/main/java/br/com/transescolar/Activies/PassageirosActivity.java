@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,10 +51,7 @@ import static br.com.transescolar.controler.HomeControler.showSnackbar;
 
 public class PassageirosActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private List<Kids> kids;
-    private KidsAdpter kidsAdpter;
-    private IKids iKids;
+    public static RecyclerView recyclerView;
     public static ProgressBar progressBarPass;
     SessionManager sessionManager;
     String getId;
@@ -61,6 +59,10 @@ public class PassageirosActivity extends AppCompatActivity {
     public static RelativeLayout relativeLayoutPass;
     private NetworkChangeReceiver3 mNetworkReceiver;
     public static Snackbar snackbar;
+
+    private List<Kids> kids = new ArrayList<>();
+    private KidsAdpter kidsAdpter;
+    private IKids iKids;
 
     PassageirosControler passageirosControler;
 
@@ -95,7 +97,7 @@ public class PassageirosActivity extends AppCompatActivity {
 
         id = Integer.parseInt(getId);
 
-        passageirosControler.fetchKid("users", id, this);
+        passageirosControler.readKids("users", id, PassageirosActivity.this);
 
     }
 
@@ -112,13 +114,13 @@ public class PassageirosActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                passageirosControler.fetchAllKid("users", query, id, PassageirosActivity.this);
+                passageirosControler.readKidsBy("users", query, id, PassageirosActivity.this);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                passageirosControler.fetchAllKid("users", newText, id, PassageirosActivity.this);
+                passageirosControler.readKidsBy("users", newText, id, PassageirosActivity.this);
                 return false;
             }
         });
@@ -148,6 +150,4 @@ public class PassageirosActivity extends AppCompatActivity {
         unregisterNetworkChanges();
     }
 
-    public void Add(MenuItem item) {
-    }
 }

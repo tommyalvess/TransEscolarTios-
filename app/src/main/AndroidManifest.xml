@@ -32,12 +32,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".Activies.AlterarSenhaActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.PerfilActivity" />
@@ -127,10 +121,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.HomeActivity" />
         </activity>
-        <activity
-            android:name=".Activies.EditarUsuarioActivity"
-            android:label="@string/title_activity_editar_usuario"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activies.DriverMapsActivity"
             android:label="@string/title_activity_driver_maps"

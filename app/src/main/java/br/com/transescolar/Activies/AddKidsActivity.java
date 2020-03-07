@@ -35,11 +35,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import br.com.transescolar.API.ApiClient;
+import br.com.transescolar.controler.KidsControler;
 import br.com.transescolar.model.Escolas;
 import br.com.transescolar.model.Kids;
 import br.com.transescolar.model.Pais;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
+import br.com.transescolar.model.Tios;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,11 +52,15 @@ public class AddKidsActivity extends AppCompatActivity implements  SearchableSpi
 
     Spinner spinnerPeriodo;
     SearchableSpinner spinnerEscola;
-    EditText editNomeT,endT;
+    EditText editNomeK,endT;
     MaskEditText dtNasc, embarque, desembarque;
     boolean isUpdating = false;
-    Kids kids;
+    Kids objKids;
+    Tios objTio;
     Button btnSaveCadastro;
+
+    KidsControler kidsControler;
+
 
     List<Escolas> spinnerEscolaData;
     String name [] = {"Manhã", "Tarde"};
@@ -65,12 +71,7 @@ public class AddKidsActivity extends AppCompatActivity implements  SearchableSpi
     private RequestQueue queue;
 
     SessionManager sessionManager;
-    String nome;
-    String dtNas;
-    String end, embarqueK, desembarqueK;
-    int tio, getId, getIdPai;
-    int escola;
-    String periodo;
+    int getId, getIdPai;
 
     ScrollView scrollCadas;
 
@@ -84,11 +85,15 @@ public class AddKidsActivity extends AppCompatActivity implements  SearchableSpi
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        //Spinner dados
         sessionManager = new SessionManager(this);
         Pais pais = (Pais) getIntent().getExtras().get("paisId");
 
         HashMap<String, String> user = sessionManager.getUserDetail();
+
+        objKids = new Kids();
+        objTio = new Tios();
+
+        kidsControler = new KidsControler();
 
         getIdPai = pais.getIdPais();
         getId = Integer.parseInt(user.get(sessionManager.ID));
@@ -100,7 +105,7 @@ public class AddKidsActivity extends AppCompatActivity implements  SearchableSpi
         spinnerEscola= findViewById(R.id.spinnerE);
         spinnerPeriodo = findViewById(R.id.spinnerP);
 
-        editNomeT = findViewById(R.id.editNomeT);
+        editNomeK = findViewById(R.id.editNomeK);
         dtNasc = findViewById(R.id.dtNasc);
         endT = findViewById(R.id.end);
         embarque =findViewById(R.id.embarque);
@@ -108,13 +113,14 @@ public class AddKidsActivity extends AppCompatActivity implements  SearchableSpi
         btnSaveCadastro = findViewById(R.id.btnSaveCadastro);
         scrollCadas = findViewById(R.id.scrollCadas);
 
-        editNomeT.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        editNomeK.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         endT.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         // Spinner periodo
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, name);
         spinnerPeriodo.setAdapter(arrayAdapter);
 
+        spinnerPeriodo.setPrompt("Selecione um Periodo:");
         spinnerPeriodo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -137,102 +143,58 @@ public class AddKidsActivity extends AppCompatActivity implements  SearchableSpi
             }
         });
 
-        btnSaveCadastro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String nomeA  = editNomeT.getText().toString().trim();
-                final String dtNasA  = dtNasc.getText().toString();
-                final String endA = endT.getText().toString().trim();
-                final String embarqueKA = embarque.getText().toString();
-                final String desembarqueKA = desembarque.getText().toString();
-                final String periodoA = record.trim();
-
-                final int escola  = spinnerEscola.getSelectedItemPosition()+1;
-
-                if (nomeA.isEmpty()){
-                    editNomeT.setError("Insira o seu nome");
-                    editNomeT.requestFocus();
-                    return;
-                }
-
-                if (dtNasA.isEmpty()){
-                    dtNasc.setError("Insira aniversario!");
-                    dtNasc.requestFocus();
-                    return;
-                }
-
-                if (endA.isEmpty()){
-                    endT.setError("Insira endereço!");
-                    endT.requestFocus();
-                    return;
-                }
-
-                if (embarqueKA.isEmpty()){
-                    endT.setError("Insira o horário!");
-                    endT.requestFocus();
-                    return;
-                }
-
-                if (desembarqueKA.isEmpty()){
-                    endT.setError("Insira o horário!");
-                    endT.requestFocus();
-                    return;
-                }
-
-                Call<ResponseBody> call = ApiClient
-                        .getInstance()
-                        .getApi()
-                        .createkids(nomeA, dtNasA, endA, periodoA, embarqueKA, desembarqueKA, getId, escola, getIdPai);
-
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
-                        String s = null;
-
-                        try {
-                            if (response.code() == 201) {
-                                s = response.body().string();
-                                Intent it = new Intent(AddKidsActivity.this, PassageirosActivity.class);
-                                AddKidsActivity.this.startActivity(it);
-                                finish();
-                            }else {
-                                s = response.errorBody().string();
-                                Toast.makeText(AddKidsActivity.this, s, Toast.LENGTH_SHORT).show();
-
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (s != null){
-                            try {
-                                JSONObject jsonObject = new JSONObject(s);
-                                Toast.makeText(AddKidsActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-                            }catch (JSONException e){
-                                e.printStackTrace();
-                                Log.e("Call", "Erro", e);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e("Call", "Error", t);
-                    }
-                });
-
-            }
-        });
-
-        spinnerPeriodo.setPrompt("Selecione um Periodo:");
-
         new GetDataEscola().execute();
 
         spinnerEscola.setTitle("Selecionar uma Escola");
-
         spinnerEscola.setOnItemSelectedListener(this);
+
+        btnSaveCadastro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popularDadosKids();
+            }
+        });
+
+    }
+
+    private void popularDadosKids() {
+        //TODO: inserido dados nos atributos
+        String nome = editNomeK.getText().toString().trim();
+        objKids.setNome(editNomeK.getText().toString().trim());
+        objKids.setDt_nas(dtNasc.getText().toString());
+        objKids.setEnd_principal(endT.getText().toString().trim());
+        objKids.setEmbarque(embarque.getText().toString());
+        objKids.setDesembarque(desembarque.getText().toString());
+        objKids.setPeriodo(record.trim());
+        objKids.setNm_escola(String.valueOf(spinnerEscola.getSelectedItemPosition()+1));
+        objKids.setNm_pais(String.valueOf(getIdPai));
+        objKids.setIdTios(getId);
+
+        //TODO: Validação simples do formulçario.
+        if (objKids.getNm_escola().isEmpty()){
+            editNomeK.setError("Insira o seu nome");
+            editNomeK.requestFocus();
+            return;
+        } else if (objKids.getDt_nas().isEmpty()){
+            dtNasc.setError("Insira aniversario!");
+            dtNasc.requestFocus();
+            return;
+        } else if (objKids.getEnd_principal().isEmpty()){
+            endT.setError("Insira endereço!");
+            endT.requestFocus();
+            return;
+        } else if (objKids.getEmbarque().isEmpty()){
+            endT.setError("Insira o horário!");
+            endT.requestFocus();
+            return;
+        } else if (objKids.getDesembarque().isEmpty()){
+            endT.setError("Insira o horário!");
+            endT.requestFocus();
+            return;
+        } else {
+            //TODO: conexão com o controler
+            kidsControler.salvarKids(objKids, AddKidsActivity.this);
+        }
 
     }
 
@@ -288,10 +250,6 @@ public class AddKidsActivity extends AppCompatActivity implements  SearchableSpi
             requestQueue.add(movieReq);
             return null;
         }
-
-    }
-
-    private void registroPadrao() {
 
     }
 

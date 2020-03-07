@@ -22,11 +22,7 @@ public class CadastroControler extends DataSourceCadastro {
 
     public static boolean isValidPassword(String s) {
         //TODO: Validando a senha
-
-        Pattern PASSWORD_PATTERN
-                = Pattern.compile(
-                "[a-zA-Z0-9\\!\\@\\#\\$]{8,24}"
-        );
+        Pattern PASSWORD_PATTERN = Pattern.compile("[a-zA-Z0-9\\!\\@\\#\\$]{8,24}");
         return !TextUtils.isEmpty(s) && PASSWORD_PATTERN.matcher(s).matches();
     }
 

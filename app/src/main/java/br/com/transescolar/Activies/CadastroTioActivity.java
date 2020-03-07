@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,24 +84,15 @@ public class CadastroTioActivity extends AppCompatActivity {
         findViewById(R.id.btnSaveCadastro).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: conexão
+                //TODO: conexão com o controler
                 popularDadosTios();
-                cadastroControler.salvarTios(objTios);
             }
         });
     }
 
     private void popularDadosTios(){
 
-        //TODO: inserido atributos no model Tios
-
-        objTios.setNome(editNome.getText().toString().trim());
-        objTios.setCpf(editCpf.getText().toString().trim());
-        objTios.setApelido(tio + editApelido.getText().toString().trim());
-        objTios.setPlaca(editPlaca.getText().toString().trim());
-        objTios.setTell(editTell.getText().toString().trim());
-        objTios.setSenha(editSenha.getText().toString().trim());
-        objTios.setEmail(editEmail.getText().toString().trim());
+        //TODO: inserido dados nos atributos
 
         int selectedId = radiogTios.getCheckedRadioButtonId();
         // find which radioButton is checked by id
@@ -110,52 +102,57 @@ public class CadastroTioActivity extends AppCompatActivity {
             tio = "Tia ";
         }
 
+        objTios.setNome(editNome.getText().toString().trim());
+        objTios.setCpf(editCpf.getText().toString().trim());
+        objTios.setApelido(tio + editApelido.getText().toString().trim());
+        objTios.setPlaca(editPlaca.getText().toString().trim());
+        objTios.setTell(editTell.getText().toString().trim());
+        objTios.setSenha(editSenha.getText().toString().trim());
+        objTios.setEmail(editEmail.getText().toString().trim());
+
+
+
+        //TODO: Validação simples do formulçario.
         if (objTios.getNome().isEmpty()){
             editNome.setError("Insira o seu nome");
             editNome.requestFocus();
             return;
-        }
-        if (objTios.getCpf().isEmpty()){
+        } else if (objTios.getCpf().isEmpty()){
             editCpf.setError("Insira o seu CPF");
             editCpf.requestFocus();
             return;
-        }
-
-        if (objTios.getApelido().isEmpty()){
+        } else if (objTios.getApelido().isEmpty()){
             editApelido.setError("Insira o seu Apelido");
             editApelido.requestFocus();
             return;
-        }
-
-        if (objTios.getPlaca().isEmpty()){
+        } else if (objTios.getPlaca().isEmpty()){
             editPlaca.setError("Insira a placa");
             editPlaca.requestFocus();
             return;
-        }
-
-        if (objTios.getTell().isEmpty()){
+        } else if (objTios.getTell().isEmpty()){
             editTell.setError("Insira o telefone");
             editTell.requestFocus();
             return;
-        }
-        if (objTios.getEmail().isEmpty()){
+        } else if (objTios.getEmail().isEmpty()){
             editEmail.setError("Insira um email!");
             editEmail.requestFocus();
             return;
-        }
-        if (objTios.getSenha().isEmpty()){
+        } else if (objTios.getSenha().isEmpty()){
             editEmail.setError("Insira um email!");
             editEmail.requestFocus();
             return;
-        }
-        if (isValidPassword(objTios.getSenha())){
-            editEmail.setError("A senha não é valido!");
-            editEmail.requestFocus();
-            return;
+        } else {
+            cadastroControler.salvarTios(objTios);
         }
 
+//        if (isValidPassword(objTios.getSenha())){
+//            Toast.makeText(this, "A senha deve ter 9 caracteres e possuir ", Toast.LENGTH_LONG).show();
+//            editSenha.setError("A senha não é valido!");
+//            editSenha.requestFocus();
+//            return;
+//        }
 
-    }
+    }//fim do popularDadosTios
 
 
     @Override

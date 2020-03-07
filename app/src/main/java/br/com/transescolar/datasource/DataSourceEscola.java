@@ -19,5 +19,34 @@ import static br.com.transescolar.Activies.EscolasActivity.progressBarEs;
 import static br.com.transescolar.Activies.EscolasActivity.recyclerView;
 
 public class DataSourceEscola {
+    private List<Escolas> contacts;
+    private EscolaAdapter adapter;
+    private IEscolas apiInterface;
+    private Escolas escolas;
+
+    public void fetchEscolas(String type, String key, final Context context) {
+
+        apiInterface = ApiClient.getApiClient().create(IEscolas.class);
+
+        Call<List<Escolas>> call = apiInterface.getEscolas(type, key);
+        call.enqueue(new Callback<List<Escolas>>() {
+            @Override
+            public void onResponse(Call<List<Escolas>> call, Response<List<Escolas>> response) {
+                progressBarEs.setVisibility(View.GONE);
+                contacts = response.body();
+                adapter = new EscolaAdapter(contacts, context);
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<Escolas>> call, Throwable t) {
+                progressBarEs.setVisibility(View.GONE);
+                Toast.makeText(context, "Nada Localizado!", Toast.LENGTH_SHORT).show();
+                Log.e("Chamada", "Erro", t);
+            }
+        });
+    }
+
 
 }

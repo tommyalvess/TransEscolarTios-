@@ -31,9 +31,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.transescolar.controler.RotaControler;
 import br.com.transescolar.model.Kids;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
+import br.com.transescolar.model.Rota;
+import br.com.transescolar.model.Tios;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static br.com.transescolar.API.URL.URL_ADD_KIDS_ROTA;
@@ -64,9 +67,14 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
 
     private List<Kids> contacts;
     private Context context;
-    String getId, getIdKids;
+    int getId;
+    int getIdKids;
     RequestOptions options;
     SessionManager sessionManager;
+    RotaControler rotaControler;
+    Rota objRota;
+    Kids objKids;
+
 
     public AddKidsAdapter(List<Kids> contacts, Context context) {
         this.contacts = contacts;
@@ -84,15 +92,17 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.linha_add_kids, parent, false);
         sessionManager = new SessionManager(context);
 
+        rotaControler = new RotaControler();
         HashMap<String, String> rotas = sessionManager.getIdRoto();
-        getId = rotas.get(sessionManager.IDROTA);
+        getId = Integer.parseInt(rotas.get(sessionManager.IDROTA));
 
         return new AddKidsAdapter.MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final AddKidsAdapter.MyViewHolder holder, final int position) {
-        final Kids kids = this.contacts.get(position);
+        objKids = this.contacts.get(position);
+        getIdKids = contacts.get(position).getIdKids();
         holder.txtNomeRota.setText(contacts.get(position).getNome());
         holder.txtDias.setText(contacts.get(position).getNm_escola());
         holder.txtHora.setText(contacts.get(position).getPeriodo());
@@ -115,58 +125,23 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
         holder.ADD.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View view) {
-                   getIdKids = String.valueOf(contacts.get(position).getIdKids());
-                   StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_ADD_KIDS_ROTA,
-                           new com.android.volley.Response.Listener<String>() {
-                               @Override
-                               public void onResponse(String response) {
-                                   try {
-                                       JSONObject jsonObject = new JSONObject(response);
-                                       //boolean success = jsonObject.getBoolean("success");
-                                       String success = jsonObject.getString("success");
-                                       //JSONArray success = jsonObject.getJSONArray("success");
-                                       if (success.equals("OK")){
-                                           mItemManger.removeShownLayouts(swipeLayout);
-                                           contacts.remove(position);
-                                           notifyItemRemoved(position);
-                                           notifyItemRangeChanged(position, contacts.size());
-                                           mItemManger.closeAllItems();
 
-                                           Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                                       }else {
+                   objKids = new Kids();
+                   objRota = new Rota();
 
-                                           Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                   objRota.setId(getId);
+                   objKids.setIdKids(getIdKids);
 
-                                       }
-
-                                   } catch (JSONException e1) {
-                                       e1.printStackTrace();
-                                       Log.e("JSON", "Error parsing JSON", e1);
-                                       Log.e("Chamada", response);
-                                   }
-                               }
-                           },
-                           new com.android.volley.Response.ErrorListener() {
-                               @Override
-                               public void onErrorResponse(VolleyError error) {
-                               }
-                           }){
-                       @Override
-                       protected Map<String, String> getParams() throws AuthFailureError {
-                           Map<String, String> params = new HashMap<>();
-                           params.put("idRota", getId);
-                           params.put("idKids", getIdKids);
-                           return params;
-                       }
-                   };
-
-                   RequestQueue requestQueue = Volley.newRequestQueue(context);
-                   requestQueue.add(stringRequest);
+                   rotaControler.salvarKidsnaRota(objRota, objKids, context);
                }
            }
         );
 
         mItemManger.bindView(holder.itemView, position);
+
+    }
+
+    private void popularObj() {
 
     }
 

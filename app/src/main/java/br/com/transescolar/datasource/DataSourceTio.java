@@ -24,6 +24,7 @@ import java.util.Map;
 
 import br.com.transescolar.Activies.HomeActivity;
 import br.com.transescolar.Activies.LoginActivity;
+import br.com.transescolar.Activies.PerfilActivity;
 import br.com.transescolar.controler.TioControler;
 import br.com.transescolar.model.Tios;
 
@@ -33,10 +34,18 @@ import static br.com.transescolar.Activies.LoginActivity.btnLogin;
 import static br.com.transescolar.Activies.LoginActivity.loginProgress;
 import static br.com.transescolar.Activies.LoginActivity.sessionManager;
 
+import static br.com.transescolar.Activies.PerfilActivity.cropOptions;
+import static br.com.transescolar.Activies.PerfilActivity.imgPerfilT;
+import static br.com.transescolar.Activies.PerfilActivity.texPlacaU;
+import static br.com.transescolar.Activies.PerfilActivity.textCpfU;
+import static br.com.transescolar.Activies.PerfilActivity.textEmailU;
+import static br.com.transescolar.Activies.PerfilActivity.textNomeU;
+import static br.com.transescolar.Activies.PerfilActivity.textTellU;
+import static br.com.transescolar.Activies.PerfilActivity.tv_name;
 import static com.android.volley.VolleyLog.TAG;
 
 public class DataSourceTio {
-
+    //TODO:Read
     public boolean sessionTio(final Tios objTio, final Context context){
         //TODO: logando tio
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_LOGIN,
@@ -122,5 +131,60 @@ public class DataSourceTio {
         return true;
     }
 
+    public boolean fetchPerfeil(Tios objTio, Context context){
+        Log.e("Perfil DataSource", "Entrada, OK!");
 
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_READ,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Mensagem GetUserDetail", response.toString());
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            JSONArray nameArray = json.names();
+                            JSONArray valArray = json.toJSONArray( nameArray );
+                            if (!json.optBoolean("falhou")){
+                                for (int i = 0; i < valArray.length(); i++) {
+                                    JSONObject object = valArray.getJSONObject(i);
+                                    String id = object.getString("idTios").trim();
+                                    String nome = object.getString("nome").trim();
+                                    String email = object.getString("email").trim();
+                                    String cpf = object.getString("cpf").trim();
+                                    String apelido = object.getString("apelido").trim();
+                                    String placa = object.getString("placa").trim();
+                                    String tell = object.getString("tell").trim();
+                                    String strImage = object.getString("img").trim();
+
+                                    textNomeU.setText(nome);
+                                    textEmailU.setText(email);
+                                    textCpfU.setText(cpf);
+                                    tv_name.setText(apelido);
+                                    texPlacaU.setText(placa);
+                                    textTellU.setText(tell);
+                                    Glide.with(context).load(strImage).apply(cropOptions).into(imgPerfilT);
+
+                                }
+                            }
+                        }catch ( JSONException e ) {
+                            Log.e("JSON", "Error parsing JSON", e);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VolleyError", "Error", error);
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<>();
+                param.put("idTios", objTio.getId());
+                return param;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+        return true;
+    }
 }

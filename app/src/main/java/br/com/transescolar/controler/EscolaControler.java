@@ -42,30 +42,9 @@ public class EscolaControler extends DataSourceEscola {
         this.escolas = new Escolas();
     }
 
-    public void fetchEscolas(String type, String key, final Context context) {
-
-        apiInterface = ApiClient.getApiClient().create(IEscolas.class);
-
-        Call<List<Escolas>> call = apiInterface.getEscolas(type, key);
-        call.enqueue(new Callback<List<Escolas>>() {
-            @Override
-            public void onResponse(Call<List<Escolas>> call, Response<List<Escolas>> response) {
-                progressBarEs.setVisibility(View.GONE);
-                contacts = response.body();
-                adapter = new EscolaAdapter(contacts, context);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<List<Escolas>> call, Throwable t) {
-                progressBarEs.setVisibility(View.GONE);
-                Toast.makeText(context, "Nada Localizado!", Toast.LENGTH_SHORT).show();
-                Log.e("Chamada", "Erro", t);
-            }
-        });
+    public void readEscola(String type, String key, final Context context){
+        fetchEscolas(type, key, context);
     }
-
     public static void dialogE(boolean value, final Context context){
 
         if(value){

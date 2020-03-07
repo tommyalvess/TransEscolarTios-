@@ -11,12 +11,4 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         android:title="Search"/>
 
-    <item
-        android:id="@+id/addKids"
-        android:orderInCategory="100"
-        android:icon="@drawable/addb"
-        android:title="Add"
-        android:onClick="Add"
-        app:showAsAction="always" />
-
 </menu>

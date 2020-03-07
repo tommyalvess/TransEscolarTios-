@@ -15,7 +15,7 @@ import retrofit2.http.Query;
 
 import static br.com.transescolar.API.URL.BASE_SEARCH;
 
-public interface    IPais {
+public interface  IPais {
 
     @GET("pessoa")
     Call<List<Pais>> getPais(@Query("id") int idPais);
@@ -34,27 +34,14 @@ public interface    IPais {
     );
 
     @FormUrlEncoded
-    @POST("createPais")
+    @POST("createPai")
     Call<ResponseBody> createPais (
             @Field("nm_pai") String nome,
             @Field("email") String email,
             @Field("cpf") String cpf,
             @Field("tell") String tell,
-            @Field("senha") String senha
-    );
-
-    @FormUrlEncoded
-    @POST("createKids")
-    Call<ResponseBody> createkids (
-            @Field("nome") String nome,
-            @Field("dt_nas") String data,
-            @Field("end_principal") String end,
-            @Field("periodo") String periodo,
-            @Field("embarque") String embarque,
-            @Field("desembarque") String desembarque,
-            @Field("idTios") int idTios,
-            @Field("idEscola") int idEscola,
-            @Field("idPais") int idPais
+            @Field("senha") String senha,
+            @Field("idTios") String idTios
     );
 
     Retrofit retrofit = new Retrofit.Builder()
