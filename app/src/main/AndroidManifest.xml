@@ -136,27 +136,50 @@
         </activity>
         <activity android:name=".Activies.RecuperarSenhaActivity" />
         <activity android:name=".Activies.ResetSenhaActivity" />
-        <activity android:name=".Activies.RotaActivity">
+        <activity android:name=".Activies.RotaActivity"
+            android:parentActivityName=".Activies.RotaActivity"
+            android:usesCleartextTraffic="true"
+            android:clearTaskOnLaunch="true"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:noHistory="true"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.HomeActivity" />
         </activity>
-        <activity android:name=".Activies.CadastrarRotaActivity">
+        <activity
+            android:name=".Activies.CadastrarRotaActivity"
+            android:parentActivityName=".Activies.RotaActivity"
+            android:usesCleartextTraffic="true"
+            android:clearTaskOnLaunch="true"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:noHistory="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="br.com.transescolar.Activies.RotaActivity" />
+
+        </activity>
+        <activity android:name=".Activies.InfRotaActivity"
+                  android:usesCleartextTraffic="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.RotaActivity" />
         </activity>
-        <activity android:name=".Activies.InfRotaActivity">
+        <activity
+            android:name=".Activies.EditRotaActivity"
+            android:usesCleartextTraffic="true"
+            android:clearTaskOnLaunch="true"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true"
+            android:noHistory="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.RotaActivity" />
         </activity>
-        <activity android:name=".Activies.EditRotaActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="br.com.transescolar.Activies.RotaActivity" />
-        </activity>
-        <activity android:name=".Activies.AddKidsRotaActivity">
+        <activity android:name=".Activies.AddKidsRotaActivity"
+             android:usesCleartextTraffic="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="br.com.transescolar.Activies.InfRotaActivity" />

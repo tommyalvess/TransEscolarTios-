@@ -142,7 +142,9 @@ public class CadastroTioActivity extends AppCompatActivity {
             editEmail.requestFocus();
             return;
         } else {
-            cadastroControler.salvarTios(objTios);
+            if(cadastroControler.salvarTios(objTios) == true){
+                finish();
+            }
         }
 
 //        if (isValidPassword(objTios.getSenha())){

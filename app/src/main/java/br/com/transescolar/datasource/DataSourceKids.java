@@ -101,15 +101,15 @@ public class DataSourceKids {
                     kidsAdpter.notifyDataSetChanged();
                 }else {
                     progressBarPass.setVisibility(View.GONE);
-                    Toast.makeText(context, "Nenhum passageiro encontrado!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Nenhum passageiro encontrado!", Toast.LENGTH_LONG).show();
                 }
-
 
             }
 
             @Override
             public void onFailure(Call<List<Kids>> call, Throwable t) {
                 progressBarPass.setVisibility(View.GONE);
+                Toast.makeText(context, "Opss. Algo deu errado!", Toast.LENGTH_LONG).show();
                 Log.e("Chamada", "Erro", t);
             }
         });
@@ -137,7 +137,7 @@ public class DataSourceKids {
             @Override
             public void onFailure(Call<List<Kids>> call, Throwable t) {
                 progressBarPass.setVisibility(View.GONE);
-                Toast.makeText(context, "Opss! Algo deu errado!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Opss! Algo deu errado!", Toast.LENGTH_LONG).show();
                 Log.e("Chamada", "Erro", t);
             }
         });

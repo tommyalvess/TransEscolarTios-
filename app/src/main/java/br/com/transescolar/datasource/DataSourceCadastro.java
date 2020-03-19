@@ -27,6 +27,7 @@ import retrofit2.Response;
 public class DataSourceCadastro {
 
     private Context context;
+    boolean resp;
 
     public boolean inserirDados(Tios objTios){
         //TODO: Adicionar Tio
@@ -49,11 +50,12 @@ public class DataSourceCadastro {
                         s = response.body().string();
                         Intent intent = new Intent(context, LoginActivity.class);
                         DataSourceCadastro.this.context.startActivity(intent);
-
+                        resp = true;
                     }else {
                         s = response.errorBody().string();
-                        Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, s, Toast.LENGTH_LONG).show();
                         Log.e("Chamada", s);
+                        resp = false;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -62,7 +64,7 @@ public class DataSourceCadastro {
                 if (s != null){
                     try {
                         JSONObject jsonObject = new JSONObject(s);
-                        Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
                     }catch (JSONException e){
                         e.printStackTrace();
@@ -77,7 +79,7 @@ public class DataSourceCadastro {
         });
 
 
-        return true;
+        return resp;
     }
 
 }

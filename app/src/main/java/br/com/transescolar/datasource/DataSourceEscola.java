@@ -42,7 +42,7 @@ public class DataSourceEscola {
             @Override
             public void onFailure(Call<List<Escolas>> call, Throwable t) {
                 progressBarEs.setVisibility(View.GONE);
-                Toast.makeText(context, "Nada Localizado!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Opsss! Algo deu errado.", Toast.LENGTH_SHORT).show();
                 Log.e("Chamada", "Erro", t);
             }
         });

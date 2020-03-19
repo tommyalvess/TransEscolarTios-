@@ -10,14 +10,19 @@ import br.com.transescolar.model.Tios;
 public class CadastroControler extends DataSourceCadastro {
 
     private Tios tios;
-
+    boolean resp;
     public CadastroControler(){
         this.tios = new Tios();
     }
 
-    public void salvarTios(Tios objTios){
+    public boolean salvarTios(Tios objTios){
         this.tios = objTios;
-        inserirDados(objTios);
+        if(inserirDados(objTios) == true){
+            resp = true;
+        }else {
+            resp = false;
+        }
+        return resp;
     }
 
     public static boolean isValidPassword(String s) {

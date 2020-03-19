@@ -189,63 +189,6 @@ public class PerfilActivity extends AppCompatActivity {
         Glide.with(context).load(nIMG).apply(cropOptions).into(imgPerfilT);
     }
 
-    //Pegar as infs do BD
-    public void getUserDetail(final Context context){
-        //TODO: Pegando dados do BD
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_READ,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("Mensagem GetUserDetail", response.toString());
-                        try {
-                            JSONObject json = new JSONObject(response);
-                            JSONArray nameArray = json.names();
-                            JSONArray valArray = json.toJSONArray( nameArray );
-                            if (!json.optBoolean("falhou")){
-                                for (int i = 0; i < valArray.length(); i++) {
-                                    JSONObject object = valArray.getJSONObject(i);
-                                    String id = object.getString("idTios").trim();
-                                    String nome = object.getString("nome").trim();
-                                    String email = object.getString("email").trim();
-                                    String cpf = object.getString("cpf").trim();
-                                    String apelido = object.getString("apelido").trim();
-                                    String placa = object.getString("placa").trim();
-                                    String tell = object.getString("tell").trim();
-                                    String strImage = object.getString("img").trim();
-
-                                    textNomeU.setText(nome);
-                                    textEmailU.setText(email);
-                                    textCpfU.setText(cpf);
-                                    tv_name.setText(apelido);
-                                    texPlacaU.setText(placa);
-                                    textTellU.setText(tell);
-                                    Glide.with(context).load(strImage).apply(cropOptions).into(imgPerfilT);
-
-                                }
-                            }
-                        }catch ( JSONException e ) {
-                            Log.e("JSON", "Error parsing JSON", e);
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("VolleyError", "Error", error);
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> param = new HashMap<>();
-                param.put("idTios", tios.getId());
-                return param;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
-    }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -344,7 +287,7 @@ public class PerfilActivity extends AppCompatActivity {
             public void onClick(View v) {
                 HashMap<String, String> user = sessionManager.getUserDetail();
 
-                final String id = getId;
+                final String id = user.get(sessionManager.ID);
                 final String nome = nomeE.getText().toString().trim();
                 final String email = user.get(sessionManager.EMAIL);
                 final String cpf = user.get(sessionManager.CPF);
@@ -388,7 +331,7 @@ public class PerfilActivity extends AppCompatActivity {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> params = new HashMap<>();
-                        params.put("idTios", getId);
+                        params.put("idTios", id);
                         params.put("nome", nome);
                         params.put("email", email);
                         params.put("cpf", getCpf);
@@ -413,9 +356,9 @@ public class PerfilActivity extends AppCompatActivity {
         int id = Integer.parseInt(nId);
 
         View mView = getLayoutInflater().inflate(R.layout.dialog_cpf, null);
-        final EditText cpfE = (EditText) mView.findViewById(R.id.cpfD);
-        Button mSim = (Button) mView.findViewById(R.id.btnSim);
-        Button mNao = (Button) mView.findViewById(R.id.btnNao);
+        final EditText cpfE =  mView.findViewById(R.id.cpfD);
+        Button mSim = mView.findViewById(R.id.btnSim);
+        Button mNao = mView.findViewById(R.id.btnNao);
 
         alertDialog.setTitle("Editar CPF");
 

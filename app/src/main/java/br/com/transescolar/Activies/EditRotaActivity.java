@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.android.volley.AuthFailureError;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.transescolar.controler.RotaControler;
 import br.com.transescolar.model.Rota;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
@@ -47,10 +49,10 @@ public class EditRotaActivity extends AppCompatActivity {
     TextInputEditText nomeI;
     MaskEditText horarioI;
     MaterialDayPicker diasI;
-    Button btnSalvarI;
-    ProgressBar progressBar;
+    public static Button btnSalvarI;
+    public static ProgressBar progressBar;
 
-    SessionManager sessionManager;
+    Rota objRota;
     String getId;
 
     ConstraintLayout constraintLayoutEditR;
@@ -58,6 +60,8 @@ public class EditRotaActivity extends AppCompatActivity {
     //Day buttons
     ToggleButton tDon, tSeg, tTer, tQua, tQui, tSex, tSab;
     String markedButtons= "";
+
+    RotaControler rotaControler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +76,8 @@ public class EditRotaActivity extends AppCompatActivity {
 
         Rota rota = (Rota) getIntent().getExtras().get("rota");
 
-        sessionManager = new SessionManager(this);
-        HashMap<String, String> user = sessionManager.getUserDetail();
-        getId = user.get(sessionManager.ID);
+        objRota = new Rota();
+        rotaControler = new RotaControler();
 
         constraintLayoutEditR = findViewById(R.id.constraintLayoutEditR);
         progressBar = findViewById(R.id.progess);
@@ -102,30 +105,13 @@ public class EditRotaActivity extends AppCompatActivity {
         btnSalvarI.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nome = nomeI.getText().toString().trim();
-                String horario = horarioI.getText().toString().trim();
-                if (nome.isEmpty()){
-                    nomeI.setError("Campo não pode ficar vazio");
-                    nomeI.requestFocus();
-                    return;
-                }else if (horario.isEmpty()){
-                    nomeI.setError("Campo não pode ficar vazio");
-                    nomeI.requestFocus();
-                    return;
-                }else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    btnSalvarI.setVisibility(View.GONE);
-                    Regist();
-                }
+                    popularDados();
             }
         });
     }
 
-    private void Regist() {
-        final String nome = this.nomeI.getText().toString().trim();
-        final String horario = this.horarioI.getText().toString().trim();
+    private void popularDados() {
 
-        //Check individual items.
         if(tDon.isChecked()){
             markedButtons +="Dom,";
         }
@@ -148,62 +134,28 @@ public class EditRotaActivity extends AppCompatActivity {
             markedButtons +="Sab";
         }
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EDIT_ROTA,
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            //boolean success = jsonObject.getBoolean("success");
-                            String success = jsonObject.getString("success");
-                            //JSONArray success = jsonObject.getJSONArray("success");
+        objRota.setNm_rota(nomeI.getText().toString().trim());
+        objRota.setHora(horarioI.getText().toString().trim());
+        objRota.setDias(markedButtons);
+        objRota.setId(getId);
 
-
-                            if (success.equals("OK")){
-                                progressBar.setVisibility(View.GONE);
-                                Intent intent = new Intent(EditRotaActivity.this, RotaActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }else {
-                                final Snackbar snackbar = showSnackbar(constraintLayoutEditR, Snackbar.LENGTH_LONG);
-                                snackbar.show();
-                                View view = snackbar.getView();
-                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                                tv.setText(jsonObject.getString("message"));
-
-                                progressBar.setVisibility(View.GONE);
-                                btnSalvarI.setVisibility(View.VISIBLE);
-
-                            }
-
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                            Log.e("JSON", "Error parsing JSON", e1);
-                            Log.e("Chamada", response);
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    }
-                },
-                new com.android.volley.Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("nm_rota", nome);
-                params.put("hora", horario);
-                params.put("dias", markedButtons);
-                params.put("idRota", getId);
-                return params;
-            }
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        if (objRota.getHora().isEmpty()){
+            nomeI.setError("Campo não pode ficar vazio");
+            nomeI.requestFocus();
+            return;
+        }else if (objRota.getHora().isEmpty()){
+            horarioI.setError("Campo não pode ficar vazio");
+            horarioI.requestFocus();
+            return;
+        }else if(!tDon.isChecked() && !tSeg.isChecked() && !tTer.isChecked() && !tQua.isChecked() && !tQui.isChecked() && !tSex.isChecked() && !tSab.isChecked()){
+            Toast.makeText(EditRotaActivity.this, "Selecione pelo menos um dia da semana!", Toast.LENGTH_SHORT).show();
+        }else {
+            progressBar.setVisibility(View.VISIBLE);
+            btnSalvarI.setVisibility(View.GONE);
+            rotaControler.updateRota(objRota, EditRotaActivity.this);
+        }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -214,32 +166,4 @@ public class EditRotaActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)EditRotaActivity.this.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
-    }
 }

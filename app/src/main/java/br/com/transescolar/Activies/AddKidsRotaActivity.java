@@ -1,5 +1,6 @@
 package br.com.transescolar.Activies;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -188,6 +189,15 @@ public class AddKidsRotaActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void finish()
+    {
+        Intent data = new Intent();
+        data.putExtra("rota", "new_id");
+        setResult(Activity.RESULT_OK, data);
+        super.finish();
     }
 
 }

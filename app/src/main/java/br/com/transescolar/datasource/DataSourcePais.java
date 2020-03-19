@@ -49,12 +49,7 @@ public class DataSourcePais {
                     paiAdapter.notifyDataSetChanged();
                 }else {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(context, "Nenhum pai encontrado!", Toast.LENGTH_SHORT).show();
-//                    snackbar = showSnackbar(relativeLayoutPais, Snackbar.LENGTH_LONG, PaisActivity.this);
-//                    snackbar.show();
-//                    View view = snackbar.getView();
-//                    TextView tv = (TextView) view.findViewById(R.id.textSnack);
-//                    tv.setText("Nenhum pai encontrado!");
+                    Toast.makeText(context, "Nenhum pai encontrado!", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -86,8 +81,6 @@ public class DataSourcePais {
                     paiAdapter.notifyDataSetChanged();
                 }else {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(context, "Nenhum pai cadastrado!", Toast.LENGTH_SHORT).show();
-
                 }
 
             }

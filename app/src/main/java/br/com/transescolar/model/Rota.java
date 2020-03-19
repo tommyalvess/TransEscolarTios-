@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Rota implements Serializable {
-    @SerializedName("idRota") int id;
+    @SerializedName("idRota") String id;
     @SerializedName("nm_rota") String nm_rota;
     @SerializedName("hora") String hora;
     @SerializedName("dias") String dias;
     @SerializedName("idTios") int idTio;
 
-    public Rota(int id, String nm_rota, String hora, String dias, int idTio) {
+    public Rota(String id, String nm_rota, String hora, String dias, int idTio) {
         this.id = id;
         this.nm_rota = nm_rota;
         this.hora = hora;
@@ -23,11 +23,11 @@ public class Rota implements Serializable {
 
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

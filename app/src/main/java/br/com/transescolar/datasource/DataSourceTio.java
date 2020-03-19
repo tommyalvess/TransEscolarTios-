@@ -132,7 +132,7 @@ public class DataSourceTio {
     }
 
     public boolean fetchPerfeil(Tios objTio, Context context){
-        Log.e("Perfil DataSource", "Entrada, OK!");
+        Log.e("Perfil DataSource", "bv!");
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_READ,
                 new Response.Listener<String>() {

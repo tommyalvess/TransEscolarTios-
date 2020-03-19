@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -37,6 +38,7 @@ import com.gauravbhola.ripplepulsebackground.RipplePulseLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,10 +46,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.transescolar.API.ApiClient;
+import br.com.transescolar.Activies.RotaActivity;
+import br.com.transescolar.controler.RotaControler;
 import br.com.transescolar.model.Kids;
 import br.com.transescolar.Conexao.SessionManager;
 import br.com.transescolar.R;
+import br.com.transescolar.model.Rota;
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static br.com.transescolar.API.URL.URL_DELETA_KID_ROTA;
 import static br.com.transescolar.API.URL.URL_DESEMBARQUE;
@@ -63,7 +73,9 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
     String getId;
     String getIdKids;
     Kids kids;
+    Rota rota;
     Handler handler;
+    RotaControler rotaControler;
 
     RipplePulseLayout mRipplePulseLayout;
 
@@ -82,10 +94,11 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.swipe_inf_rota_layout, parent, false);
         sessionManager = new SessionManager(context);
 
-        HashMap<String, String> rotas = sessionManager.getIdRoto();
-        getId = rotas.get(sessionManager.IDROTA);
-
         mRipplePulseLayout = view.findViewById(R.id.layout_ripplepulse);
+
+        rotaControler = new RotaControler();
+        kids = new Kids();
+        rota = new Rota();
 
         return new MyViewHolder(view);
     }
@@ -114,14 +127,14 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
         }
 
         //Embarque
-        String horarioE = contacts.get(position).getEmbarque();
+        String horarioE = contacts.get(position).getStatus();
         String novoHE = horarioE.replace(":","");
-        long novoHE2 = Integer.parseInt(novoHE);
+        String novoHE2 = novoHE;
 
         //Desembarque
         String horarioD = contacts.get(position).getDesembarque();
         String novoHD = horarioD.replace(":","");
-        long novoHD2 = Integer.parseInt(novoHD);
+        String novoHD2 = novoHD;
 
         //Horario do celular
         Calendar cal = Calendar.getInstance();
@@ -129,7 +142,7 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         String formattedDate=dateFormat.format(date);
         String subHorario = formattedDate.replace(":", "");
-        long novoH3 = Integer.parseInt(subHorario);
+        String novoH3 = subHorario;
 
         if(novoHE2 == novoH3 && !status.equals("STATUS: Embarcou")){
             mRipplePulseLayout.startRippleAnimation();
@@ -184,54 +197,11 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 getIdKids = String.valueOf(contacts.get(position).getIdKids());
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_EMBARQUE,
-                        new com.android.volley.Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    //boolean success = jsonObject.getBoolean("success");
-                                    String success = jsonObject.getString("success");
-                                    //JSONArray success = jsonObject.getJSONArray("success");
 
-                                    if (success.equals("OK")){
-                                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("data_changed1"));
+                kids.setIdKids(Integer.parseInt(getIdKids));
+                kids.setStatus("Embarco");
 
-                                    }else {
-//                                        Toast toast= Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG);
-//                                        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                                        toast.show();
-                                        final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                                        snackbar.show();
-                                        View view = snackbar.getView();
-                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                                        tv.setText(jsonObject.getString("message"));
-                                    }
-
-                                } catch (JSONException e1) {
-                                    e1.printStackTrace();
-                                    Log.e("JSON", "Error parsing JSON", e1);
-                                    Log.e("Chamada", response);
-                                }
-                            }
-                        },
-                        new com.android.volley.Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-                        }){
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("idKids", getIdKids);
-                        params.put("embarque", "Embarcou");
-                        return params;
-                    }
-                };
-
-                RequestQueue requestQueue = Volley.newRequestQueue(context);
-                requestQueue.add(stringRequest);
+                rotaControler.upDateEmbarque(kids, context);
             }
         });
 
@@ -239,53 +209,11 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
             @Override
             public void onClick(View view) {
                 getIdKids = String.valueOf(contacts.get(position).getIdKids());
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_DESEMBARQUE,
-                        new com.android.volley.Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    //boolean success = jsonObject.getBoolean("success");
-                                    String success = jsonObject.getString("success");
-                                    //JSONArray success = jsonObject.getJSONArray("success");
 
-                                    if (success.equals("OK")){
-                                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("data_changed1"));
-                                    }else {
-//                                        Toast toast= Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG);
-//                                        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                                        toast.show();
-                                        final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                                        snackbar.show();
-                                        View view = snackbar.getView();
-                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                                        tv.setText(jsonObject.getString("message"));
-                                    }
+                kids.setIdKids(Integer.parseInt(getIdKids));
+                kids.setStatus("Desembarco");
 
-                                } catch (JSONException e1) {
-                                    e1.printStackTrace();
-                                    Log.e("JSON", "Error parsing JSON", e1);
-                                    Log.e("Chamada", response);
-                                }
-                            }
-                        },
-                        new com.android.volley.Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-                        }){
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("idKids", getIdKids);
-                        params.put("desembarque", "Desembarcou");
-                        return params;
-                    }
-                };
-
-                RequestQueue requestQueue = Volley.newRequestQueue(context);
-                requestQueue.add(stringRequest);
+                rotaControler.upDateDesembarque(kids, context);
             }
         });
 
@@ -293,54 +221,9 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 getIdKids = String.valueOf(contacts.get(position).getIdKids());
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_DESEMBARQUE,
-                        new com.android.volley.Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response);
-                                    //boolean success = jsonObject.getBoolean("success");
-                                    String success = jsonObject.getString("success");
-                                    //JSONArray success = jsonObject.getJSONArray("success");
-
-                                    if (success.equals("OK")){
-                                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("data_changed1"));
-                                    }else {
-//                                        Toast toast= Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG);
-//                                        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                                        toast.show();
-
-                                        final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                                        snackbar.show();
-                                        View view = snackbar.getView();
-                                        TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                                        tv.setText(jsonObject.getString("message"));
-                                    }
-
-                                } catch (JSONException e1) {
-                                    e1.printStackTrace();
-                                    Log.e("JSON", "Error parsing JSON", e1);
-                                    Log.e("Chamada", response);
-                                }
-                            }
-                        },
-                        new com.android.volley.Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-
-                            }
-                        }){
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("idKids", getIdKids);
-                        params.put("desembarque", "Faltou");
-                        return params;
-                    }
-                };
-
-                RequestQueue requestQueue = Volley.newRequestQueue(context);
-                requestQueue.add(stringRequest);
+                kids.setIdKids(Integer.parseInt(getIdKids));
+                kids.setStatus("Faltou");
+                rotaControler.upDateFaltou(kids, context);
             }
         });
 
@@ -363,67 +246,55 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
                     @Override
                     public void onClick(View v) {
                         getIdKids = String.valueOf(contacts.get(position).getIdKids());
-                        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_DELETA_KID_ROTA,
-                                new com.android.volley.Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        try {
-                                            JSONObject jsonObject = new JSONObject(response);
-                                            //boolean success = jsonObject.getBoolean("success");
-                                            String success = jsonObject.getString("success");
-                                            //JSONArray success = jsonObject.getJSONArray("success");
+                        kids.setIdKids(Integer.parseInt(getIdKids));
+                        rota.setId(getId);
 
-                                            if (success.equals("OK")){
-                                                //LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("data_changed1"));
-                                                mItemManger.removeShownLayouts(holder.swipeLayout);
-                                                contacts.remove(position);
-                                                notifyItemRemoved(position);
-                                                notifyItemRangeChanged(position, contacts.size());
-                                                mItemManger.closeAllItems();
-                                                dialog.dismiss();
+                        Call<ResponseBody> call = ApiClient
+                                .getInstance()
+                                .getApiR()
+                                .deletarKidsRotas(rota.getId(), String.valueOf(kids.getIdKids()));
 
-                                            }else {
-//                                                Toast toast= Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG);
-//                                                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-//                                                toast.show();
+                        call.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                                                final Snackbar snackbar = showSnackbar(swipeLayout, Snackbar.LENGTH_LONG);
-                                                snackbar.show();
-                                                View view = snackbar.getView();
-                                                TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                                                tv.setText(jsonObject.getString("message"));
-                                                dialog.dismiss();
+                                String s = null;
 
-                                            }
-
-                                        } catch (JSONException e1) {
-                                            dialog.dismiss();
-                                            e1.printStackTrace();
-                                            Log.e("JSON", "Error parsing JSON", e1);
-                                            Log.e("Chamada", response);
-                                        }
-                                    }
-                                },
-                                new com.android.volley.Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
+                                try {
+                                    if (response.code() == 201) {
+                                        mItemManger.removeShownLayouts(holder.swipeLayout);
+                                        contacts.remove(position);
+                                        notifyItemRemoved(position);
+                                        notifyItemRangeChanged(position, contacts.size());
+                                        mItemManger.closeAllItems();
                                         dialog.dismiss();
 
+                                    }else {
+                                        s = response.errorBody().string();
+                                        Toast.makeText(context, s, Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
                                     }
-                                }){
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> params = new HashMap<>();
-                                params.put("idKids", getIdKids);
-                                params.put("idRota", getId);
-                                return params;
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (s != null){
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(s);
+                                        Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                                    }catch (JSONException e){
+                                        e.printStackTrace();
+                                    }
+                                }
+
                             }
-                        };
 
-                        RequestQueue requestQueue = Volley.newRequestQueue(context);
-                        requestQueue.add(stringRequest);
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.e("Call", "Error", t);
+                            }
+                        });
 
-                        dialog.dismiss();
                     }
                 });
                 mNao.setOnClickListener(new View.OnClickListener() {
@@ -441,36 +312,6 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
 
     }
 
-    private Snackbar showSnackbar(SwipeLayout coordinatorLayout, int duration) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)context.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
-    }
-
-
     @Override
     public int getItemCount() {
         return contacts.size();
@@ -480,7 +321,6 @@ public class RotaInfAdapter extends RecyclerSwipeAdapter<RotaInfAdapter.MyViewHo
     public int getSwipeLayoutResourceId(int position) {
         return R.id.swipe;
     }
-
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 

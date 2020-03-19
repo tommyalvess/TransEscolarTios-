@@ -101,8 +101,8 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(final AddKidsAdapter.MyViewHolder holder, final int position) {
-        objKids = this.contacts.get(position);
-        getIdKids = contacts.get(position).getIdKids();
+        final Kids kids = this.contacts.get(position);
+        int id = kids.getIdKids();
         holder.txtNomeRota.setText(contacts.get(position).getNome());
         holder.txtDias.setText(contacts.get(position).getNm_escola());
         holder.txtHora.setText(contacts.get(position).getPeriodo());
@@ -119,6 +119,7 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
         swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
             }
         });
 
@@ -129,8 +130,8 @@ public class AddKidsAdapter extends RecyclerSwipeAdapter<AddKidsAdapter.MyViewHo
                    objKids = new Kids();
                    objRota = new Rota();
 
-                   objRota.setId(getId);
-                   objKids.setIdKids(getIdKids);
+                   objRota.setId(String.valueOf(getId));
+                   objKids.setIdKids(id);
 
                    rotaControler.salvarKidsnaRota(objRota, objKids, context);
                }

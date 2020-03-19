@@ -26,9 +26,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.swipe.util.Attributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.transescolar.API.ApiClient;
@@ -46,7 +48,7 @@ public class InfRotaActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private List<Kids> contacts;
+    private List<Kids> contacts = new ArrayList<>();
     private RotaInfAdapter adapter;
     private IRota apiInterface;
     ProgressBar progressBar;
@@ -59,6 +61,7 @@ public class InfRotaActivity extends AppCompatActivity {
     Handler handler;
 
     ConstraintLayout constraintLayoutInfR;
+    static final int SERVICO_DETALHES_REQUEST = 1;  // The request code
 
 
     @Override
@@ -91,7 +94,6 @@ public class InfRotaActivity extends AppCompatActivity {
 
         handler = new Handler();
         doTheAutoRefresh();
-
     }
 
     private void fetchRotas(String type, String idRota) {
@@ -110,11 +112,7 @@ public class InfRotaActivity extends AppCompatActivity {
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }else {
-                    final Snackbar snackbar = showSnackbar(constraintLayoutInfR, Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                    View view = snackbar.getView();
-                    TextView tv = (TextView) view.findViewById(R.id.textSnack);
-                    tv.setText("Nenhum passageiro adicinado!");
+                    Toast.makeText(InfRotaActivity.this, "Nenhum passageiro adicinado!", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
 
                 }
@@ -163,32 +161,11 @@ public class InfRotaActivity extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
     }
 
-    private Snackbar showSnackbar(ConstraintLayout coordinatorLayout, int duration) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", duration);
-        // 15 is margin from all the sides for snackbar
-        int marginFromSides = 15;
-
-        float height = 100;
-
-        //inflate view
-        LayoutInflater inflater = (LayoutInflater)InfRotaActivity.this.getApplicationContext().getSystemService
-                (Context.LAYOUT_INFLATER_SERVICE);
-        View snackView = inflater.inflate(R.layout.snackbar_layout, null);
-
-        // White background
-        snackbar.getView().setBackgroundResource(R.color.ColorBGThema);
-        snackbar.setActionTextColor(Color.BLACK);
-        // for rounded edges
-//        snackbar.getView().setBackground(getResources().getDrawable(R.drawable.shape_oval));
-
-        Snackbar.SnackbarLayout snackBarView = (Snackbar.SnackbarLayout) snackbar.getView();
-        FrameLayout.LayoutParams parentParams = (FrameLayout.LayoutParams) snackBarView.getLayoutParams();
-        parentParams.setMargins(marginFromSides, 0, marginFromSides, marginFromSides);
-        parentParams.height = (int) height;
-        parentParams.width = FrameLayout.LayoutParams.MATCH_PARENT;
-        snackBarView.setLayoutParams(parentParams);
-
-        snackBarView.addView(snackView, 0);
-        return snackbar;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SERVICO_DETALHES_REQUEST && resultCode == RESULT_OK) {
+            String newId = data.getStringExtra("rota");
+        }
     }
 }

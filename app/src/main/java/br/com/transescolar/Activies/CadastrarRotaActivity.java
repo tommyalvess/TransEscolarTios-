@@ -8,11 +8,14 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NavUtils;
+import androidx.core.app.TaskStackBuilder;
 
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -114,6 +117,29 @@ public class CadastrarRotaActivity extends AppCompatActivity {
 
     }//Final do onCreat
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Id correspondente ao botão Up/Home da actionbar
+            case android.R.id.home:
+                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                if (NavUtils.shouldUpRecreateTask(CadastrarRotaActivity.this, upIntent)) {
+                    //Se a atividade não faz parte do aplicativo, criamos uma nova tarefa
+                    // para navegação com a pilha de volta sintetizada.
+                    TaskStackBuilder.create(this)
+                            // Adiciona todas atividades parentes na pilha de volta
+                            .addNextIntentWithParentStack(upIntent)
+                            .startActivities();
+                } else {
+                    //Se essa atividade faz parte da tarefa do app
+                    //navegamos para seu parente logico.
+                    NavUtils.navigateUpTo(this, upIntent);
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void popularDadosRota(){
 
         if(tDon.isChecked()){
@@ -152,10 +178,20 @@ public class CadastrarRotaActivity extends AppCompatActivity {
             horarioI.requestFocus();
             return;
         } else {
-            rotaControler.salvarRota(objRota, objTios, CadastrarRotaActivity.this);
+            //rotaControler.salvarRota(objRota, objTios, CadastrarRotaActivity.this);
+            if(rotaControler.salvarRota(objRota, objTios, CadastrarRotaActivity.this) == true){
+                //finish();
+                nomeI.setText("");
+                horarioI.setText("");
+                markedButtons = "";
+                tDon.setChecked(false);
+                tSeg.setChecked(false);
+                tTer.setChecked(false); tQua.setChecked(false);
+                tQui.setChecked(false);
+                tSex.setChecked(false);
+                tSab.setChecked(false);
+            }
         }
-
-
 
     }
 

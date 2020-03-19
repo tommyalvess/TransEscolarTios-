@@ -2,10 +2,12 @@ package br.com.transescolar.controler;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -70,5 +72,11 @@ public class HomeControler {
 
         snackBarView.addView(snackView, 0);
         return snackbar;
+    }
+
+    public static void showToast(Context context, String msg){
+        Toast toast= Toast.makeText(context, msg, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
     }
 }
